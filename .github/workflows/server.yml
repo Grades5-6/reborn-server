@@ -51,7 +51,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/yunuo46/gaplog:latest
+          tags: ghcr.io/yunuo46/reborn:latest
 
   deploy-docker:
     needs: build-docker
