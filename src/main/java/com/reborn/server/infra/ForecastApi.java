@@ -1,12 +1,18 @@
 package com.reborn.server.infra;
 
+import com.reborn.server.domain.job.application.JobPostService;
 import com.reborn.server.domain.job.domain.JobPost;
 import com.reborn.server.domain.job.dto.JobPostDto;
+import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,63 +22,66 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/job-post")
+@RequiredArgsConstructor
 public class ForecastApi {
+    private static final Logger logger = LoggerFactory.getLogger(ForecastApi.class);
+
     private RestTemplate restTemplate;
 
-    // 수정 예정
-    @Value("${openApi.serviceKey}")
+    private final JobPostService jobPostService;
+
+    @Value("${openApi.service-key}")
     private String serviceKey;
 
-    @Value("${openApi.baseUrl}")
+    @Value("${openApi.base-url}")
     private String baseUrl;
 
+    // open api에서 우선 필요한 아이들 가져오기..
+    @GetMapping
     public ResponseEntity<List<JobPostDto>> getJobPost(@RequestParam(value = "pageNo") String pageNo,
-    @RequestParam(value = "numOfRows", defaultValue = "10") String numOfRows
-    ) {
-        HttpURLConnection urlConnection = null;
-        InputStream stream = null;
-        String result = null;
+    @RequestParam(value = "numOfRows") String numOfRows
+    ) throws Exception {
+
+//        HttpURLConnection urlConnection = null;
+//        InputStream stream = null;
+//        String result = null;
         RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_XML);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
 
-        String apiUrl = baseUrl + "serviceKey=" + serviceKey + "&pageNo=" + pageNo + "&numOfRows=" + numOfRows;
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
+        messageConverters.add(stringConverter);
+        restTemplate.setMessageConverters(messageConverters);
 
-        ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
 
-        if (response.getStatusCode() != HttpStatus.OK) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
-        List<JobPostDto> jobPosts = new ArrayList<>();
-//        try {
-//            JSONObject jsonResponse = new JSONObject(Integer.parseInt(response.getBody()));
-//            JSONArray jobs = jsonResponse.getJSONObject("response").getJSONArray("items");
-//
-//            for (int i = 0; i < jobs.length(); i++) {
-//                JSONObject job = jobs.getJSONObject(i);
-//                JobPost jobPost = new JobPost(
-//                        job.optString("jobId"),
-//                        job.optString("recrtTitle", "제목 없음"),
-//                        job.optString("oranNm", "회사 이름 없음"),
-//                        job.optString("workPlcNm", "근무지 없음"),
-//                        job.optString("emplymShpNm", "고용형태 없음"),
-//                        job.optString("toDd", "마감일 없음")
-//                );
-//                jobPosts.add(jobPost);
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
+        String apiUrl = baseUrl + "%" + serviceKey + "&pageNo=" + pageNo + "&numOfRows=" + numOfRows;
+        System.out.println(apiUrl);
+        URI uri = new URI(apiUrl);
 
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+        String xmlData = response.getBody();
+
+//        String xmlData = restTemplate.getForObject(uri, String.class);
+
+        xmlData = xmlData.trim(); // 앞뒤 공백 제거
+        xmlData = xmlData.replaceFirst("^([\\W]+)<", "<"); // BOM 제거
+
+        logger.info("Received XML Data: " + xmlData);
+
+
+        List<JobPostDto> jobPosts = jobPostService.jobPostApiParseXml(xmlData);
         return new ResponseEntity<>(jobPosts, HttpStatus.OK);
 
     }
