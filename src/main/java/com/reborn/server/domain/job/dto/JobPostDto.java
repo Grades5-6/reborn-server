@@ -5,37 +5,37 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+// 내가 필요한 데이터 DB에 저장
 @Builder
 @Getter
 @AllArgsConstructor
 public class JobPostDto {
     private Long jobPostId;
-    private String title;
-    private String content;
-    private String company;
-    private String location;
+
+    private String jobId;
+    private String jobName;
+    private String companyName;
+    private String workLocation;
     private String deadline;
+    private String start;
 
-
-//    public JobPostDto(Long jobPostId, String title, String content, String company, String location, String deadline) {
-//        this.jobPostId = jobPostId;
-//        this.title = title;
-//        this.content = content;
-//        this.company = company;
-//        this.location = location;
-//        this.deadline = deadline;
-//    }
+    public JobPostDto(String jobId, String jobName, String companyName, String workLocation, String deadline, String start) {
+        this.jobId = jobId;
+        this.jobName = jobName;
+        this.companyName = companyName;
+        this.workLocation = workLocation;
+        this.deadline = deadline;
+        this.start = start;
+    }
 
     public static JobPostDto from(JobPost jobPost){
         return JobPostDto.builder()
-                .jobPostId(jobPost.getId())
-                .title(jobPost.getTitle())
-                .content(jobPost.getContent())
-                .company(jobPost.getCompany())
-                .location(jobPost.getLocation())
+                .jobId(jobPost.getJobId())
+                .jobName(jobPost.getJobName())
+                .companyName(jobPost.getCompanyName())
+                .workLocation(jobPost.getWorkLocation())
                 .deadline(jobPost.getDeadline())
+                .start(jobPost.getStart())
                 .build();
     }
-
-
 }

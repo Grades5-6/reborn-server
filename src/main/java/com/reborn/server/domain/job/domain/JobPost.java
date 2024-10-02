@@ -7,30 +7,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Table(name = "job")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "job")
 public class JobPost {
 
     // api 받아오면 수정할 예정
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-    private String content;
-    private String company;
-    private String location;
+    private String jobId;
+    private String jobName;
+    private String companyName;
+    private String workLocation;
     private String deadline;
+    private String start;
 
     @Builder
-    public JobPost(Long id, String title, String content, String company, String location, String deadline) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.company = company;
-        this.location = location;
+    public JobPost(String jobId, String jobName, String companyName, String workLocation, String deadline, String start) {
+        this.jobId = jobId;
+        this.jobName = jobName;
+        this.companyName = companyName;
+        this.workLocation = workLocation;
         this.deadline = deadline;
+        this.start = start;
     }
 }
