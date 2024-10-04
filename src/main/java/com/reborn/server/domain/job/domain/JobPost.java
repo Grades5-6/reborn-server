@@ -1,5 +1,6 @@
 package com.reborn.server.domain.job.domain;
 
+import com.reborn.server.domain.job.dto.JobPostDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,16 +22,31 @@ public class JobPost {
     private String jobName;
     private String companyName;
     private String workLocation;
-    private String deadline;
+    private String status;
     private String start;
+    private String end;
 
     @Builder
-    public JobPost(String jobId, String jobName, String companyName, String workLocation, String deadline, String start) {
+    public JobPost(String jobId, String jobName, String companyName, String workLocation, String status, String start, String end) {
         this.jobId = jobId;
         this.jobName = jobName;
         this.companyName = companyName;
         this.workLocation = workLocation;
-        this.deadline = deadline;
+        this.status = status;
         this.start = start;
+        this.end = end;
     }
+
+    @Builder
+    public JobPost(JobPostDto jobPostDto) {
+        this.jobId = jobPostDto.getJobId();
+        this.jobName = jobPostDto.getJobName();
+        this.companyName = jobPostDto.getCompanyName();
+        this.workLocation = jobPostDto.getWorkLocation();
+        this.status = jobPostDto.getStatus();
+        this.start = jobPostDto.getStart();
+        this.end = jobPostDto.getEnd();
+    }
+
+
 }

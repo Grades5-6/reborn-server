@@ -16,16 +16,18 @@ public class JobPostDto {
     private String jobName;
     private String companyName;
     private String workLocation;
-    private String deadline;
+    private String status;
     private String start;
+    private String end;
 
-    public JobPostDto(String jobId, String jobName, String companyName, String workLocation, String deadline, String start) {
+    public JobPostDto(String jobId, String jobName, String companyName, String workLocation, String status, String start, String end) {
         this.jobId = jobId;
         this.jobName = jobName;
         this.companyName = companyName;
         this.workLocation = workLocation;
-        this.deadline = deadline;
+        this.status = status;
         this.start = start;
+        this.end = end;
     }
 
     public static JobPostDto from(JobPost jobPost){
@@ -34,8 +36,9 @@ public class JobPostDto {
                 .jobName(jobPost.getJobName())
                 .companyName(jobPost.getCompanyName())
                 .workLocation(jobPost.getWorkLocation())
-                .deadline(jobPost.getDeadline())
+                .status(jobPost.getStatus())
                 .start(jobPost.getStart())
+                .end(jobPost.getEnd())
                 .build();
     }
 }
