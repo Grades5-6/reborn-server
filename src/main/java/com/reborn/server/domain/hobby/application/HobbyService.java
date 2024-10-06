@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reborn.server.domain.hobby.dao.HobbyRepository;
 import com.reborn.server.domain.hobby.domain.Hobby;
 import com.reborn.server.domain.hobby.dto.HobbyDto;
+import com.reborn.server.domain.hobby.dto.response.HobbyResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,5 +72,13 @@ public class HobbyService {
         }
         saveHobbies(hobbyDtoList);
         return currentCount;
+    }
+
+    public List<HobbyResponse> getAllHobbies() {
+        List<Hobby> hobbies = hobbyRepository.findAll();
+
+        return hobbies.stream()
+                .map(hobby -> new HobbyResponse(hobby.getId(), hobby.getCityDistrictName(), hobby.getProvinceName(), hobby.getCategory(), hobby.getClassDuration(), hobby.getTotalCost(), hobby.getClassParticipants(), hobby.getCurriculum(), hobby.getClassTitle())) // DTO로 변환
+                .collect(Collectors.toList());
     }
 }
