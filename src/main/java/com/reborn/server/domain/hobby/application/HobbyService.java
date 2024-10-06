@@ -46,7 +46,6 @@ public class HobbyService {
             JsonNode rootNode = objectMapper.readTree(jsonResponse);
             JsonNode dataNode = rootNode.path("data"); // "data" 배열 추출
             JsonNode countNode = rootNode.path("currentCount");
-            System.out.println("currentCount: " + countNode.asText());
             currentCount = countNode.asInt();
 
             // data 배열을 순회하여 HobbyDto 생성
@@ -68,10 +67,6 @@ public class HobbyService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        // 결과 출력 test
-        for (HobbyDto hobbyDto : hobbyDtoList) {
-            System.out.println(hobbyDto.getClassTitle());
         }
         saveHobbies(hobbyDtoList);
         return currentCount;
