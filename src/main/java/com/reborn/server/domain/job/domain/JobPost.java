@@ -18,13 +18,13 @@ public class JobPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String jobId;
-    private String jobName;
-    private String companyName;
-    private String workLocation;
-    private String status;
-    private String start;
-    private String end;
+    private String jobId; // 직업공고 id
+    private String jobName; // 공고 제목
+    private String companyName; // 회사 이름
+    private String workLocation; // 위치
+    private String status; // 공고 상태 (접수중/마감)
+    private String start; // 접수 시작 일자
+    private String end; // 접수 마감 일자
 
     @Builder
     public JobPost(String jobId, String jobName, String companyName, String workLocation, String status, String start, String end) {
