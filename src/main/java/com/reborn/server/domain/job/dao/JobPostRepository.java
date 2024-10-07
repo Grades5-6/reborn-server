@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JobPostRepository extends JpaRepository<JobPost, Long> {
     boolean existsByJobId(String jobId);
+
+    void deleteByEndBefore(String string);
 }
