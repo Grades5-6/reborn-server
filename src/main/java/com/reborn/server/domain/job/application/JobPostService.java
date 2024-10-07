@@ -2,6 +2,7 @@ package com.reborn.server.domain.job.application;
 
 import com.reborn.server.domain.job.dao.JobPostRepository;
 import com.reborn.server.domain.job.domain.JobPost;
+import com.reborn.server.domain.job.dto.JobPostDetailDto;
 import com.reborn.server.domain.job.dto.JobPostDto;
 import com.reborn.server.infra.ForecastApi;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -115,6 +115,7 @@ public class JobPostService {
         int pageNo = 1;
         int numOfRows = 100;
         boolean hasMoreData = true;
+        int count = 0;
 
         while (hasMoreData) {
             String apiUrl = baseUrl + "%" + serviceKey + "&pageNo=" + pageNo + "&numOfRows=" + numOfRows;
@@ -132,6 +133,23 @@ public class JobPostService {
 
             // 받아온 데이터 파싱해서 저장
             List<JobPostDto> jobPostDtos = jobPostApiParseXml(xmlData);
+
+            // 마감인 데이터가 연속으로 10개 나오면 저장을 멈춤 - 안되나..?
+            for (JobPostDto jobPostDto : jobPostDtos) {
+                if ("마감".equals(jobPostDto.getStatus())) {
+                    count++;
+                } else {
+                    count = 0;
+                }
+
+                if (count >= 10) {
+                    logger.info("접수 중인 공고가 없어 데이터 저장을 중단합니다.");
+                    hasMoreData = false;
+                    break;
+                }
+            }
+
+
             saveJobPosts(jobPostDtos);
 
             int totalCount = getTotalCountFromXml(xmlData);
@@ -157,4 +175,61 @@ public class JobPostService {
             }
         }
 
+    public void deleteExpiredJobPosts() {
+        LocalDate today = LocalDate.now();
+        jobPostRepository.deleteByEndBefore(today.toString());
     }
+
+    public JobPostDetailDto getJobPostDetail(RestTemplate restTemplate, String detailUrl, String serviceKey, String jobId) throws Exception {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_XML);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
+
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
+        messageConverters.add(stringConverter);
+        restTemplate.setMessageConverters(messageConverters);
+
+        String apiUrl = detailUrl + "%" + serviceKey + "&id=" + jobId;
+        System.out.println(apiUrl);
+        URI uri = new URI(apiUrl);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+        String xmlData = response.getBody();
+
+        xmlData = xmlData.trim(); // 앞뒤 공백 제거
+        xmlData = xmlData.replaceFirst("^([\\W]+)<", "<"); // BOM 제거
+
+        logger.info("Received XML Data: " + xmlData);
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        InputSource is = new InputSource(new StringReader(xmlData));
+        Document document = builder.parse(is);
+
+        NodeList item = document.getElementsByTagName("item");
+        if (item.getLength() > 0) {
+            Element itemElement = (Element) item.item(0);
+
+            String age = getElementValue(itemElement, "age");
+            String ageLim = getElementValue(itemElement, "ageLim");
+            String jobTitle = getElementValue(itemElement, "wantedTitle");
+            String wantedNum = getElementValue(itemElement, "clltPrnnum");
+            String start = getElementValue(itemElement, "frAcptDd");
+            String end = getElementValue(itemElement, "toAcptDd");
+            String detailCont = getElementValue(itemElement, "detCnts");
+            String clerkphone = getElementValue(itemElement, "clerkContt");
+            String hmUrl = getElementValue(itemElement, "homepage");
+            String companyName = getElementValue(itemElement, "plbizNm");
+            String workAddr = getElementValue(itemElement, "plDetAddr");
+
+            return new JobPostDetailDto(jobId, age, ageLim, jobTitle,wantedNum ,start, end, detailCont, clerkphone, hmUrl, companyName, workAddr);
+        } else {
+            throw new Exception("No details for jobId: " + jobId);
+        }
+    }
+}
+
+
