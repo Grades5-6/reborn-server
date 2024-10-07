@@ -38,7 +38,7 @@ public class JobPostService {
     private static final Logger logger = LoggerFactory.getLogger(ForecastApi.class);
 
 
-    // db에 저장
+    // DB에 jobPostDto 저장
     public void saveJobPosts(List<JobPostDto> jobPostDtos) {
         for (JobPostDto jobDto : jobPostDtos) {
             if (!jobPostRepository.existsByJobId(jobDto.getJobId())) {
@@ -48,7 +48,7 @@ public class JobPostService {
         }
     }
 
-    // xml 데이터 파싱
+    // api xml 데이터 파싱 및 태그로 저장
     public List<JobPostDto> jobPostApiParseXml(String xmlData) throws Exception {
 
         List<JobPostDto> jobPostList = new ArrayList<>();
@@ -63,6 +63,7 @@ public class JobPostService {
         LocalDate today = LocalDate.now();
         DateTimeFormatter dateTime = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+        // items 개수만큼 반복하면서 저장
         for (int i = 0; i < items.getLength(); i++) {
             Node itemNode = items.item(i);
 
@@ -90,7 +91,7 @@ public class JobPostService {
 
     }
 
-    private String getElementValue(Element element, String tagName) {
+    public String getElementValue(Element element, String tagName) {
         NodeList nodeList = element.getElementsByTagName(tagName);
         if (nodeList.getLength() > 0) {
             Node node = nodeList.item(0);
@@ -99,7 +100,7 @@ public class JobPostService {
         return null;
     }
 
-    // 데이터 동기화
+    // api 호출
     public void syncJobData(RestTemplate restTemplate, String baseUrl, String serviceKey) throws Exception {
 
         HttpHeaders headers = new HttpHeaders();
@@ -115,7 +116,6 @@ public class JobPostService {
         int pageNo = 1;
         int numOfRows = 100;
         boolean hasMoreData = true;
-        int count = 0;
 
         while (hasMoreData) {
             String apiUrl = baseUrl + "%" + serviceKey + "&pageNo=" + pageNo + "&numOfRows=" + numOfRows;
@@ -131,27 +131,11 @@ public class JobPostService {
 
             logger.info("Received XML Data: " + xmlData);
 
-            // 받아온 데이터 파싱해서 저장
+            // 받아온 데이터 파싱해서 saveJobPost 호출
             List<JobPostDto> jobPostDtos = jobPostApiParseXml(xmlData);
-
-            // 마감인 데이터가 연속으로 10개 나오면 저장을 멈춤 - 안되나..?
-            for (JobPostDto jobPostDto : jobPostDtos) {
-                if ("마감".equals(jobPostDto.getStatus())) {
-                    count++;
-                } else {
-                    count = 0;
-                }
-
-                if (count >= 10) {
-                    logger.info("접수 중인 공고가 없어 데이터 저장을 중단합니다.");
-                    hasMoreData = false;
-                    break;
-                }
-            }
-
-
             saveJobPosts(jobPostDtos);
 
+            // 더이상 저장할 페이지 정보 없으면 멈춤
             int totalCount = getTotalCountFromXml(xmlData);
             if (pageNo * numOfRows >= totalCount) {
                 hasMoreData = false;
@@ -161,7 +145,7 @@ public class JobPostService {
         }
     }
 
-    public int getTotalCountFromXml(String xmlData) throws Exception {
+    private int getTotalCountFromXml(String xmlData) throws Exception {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             InputSource is = new InputSource(new StringReader(xmlData));
@@ -178,57 +162,6 @@ public class JobPostService {
     public void deleteExpiredJobPosts() {
         LocalDate today = LocalDate.now();
         jobPostRepository.deleteByEndBefore(today.toString());
-    }
-
-    public JobPostDetailDto getJobPostDetail(RestTemplate restTemplate, String detailUrl, String serviceKey, String jobId) throws Exception {
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_XML);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
-
-        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
-        StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-        messageConverters.add(stringConverter);
-        restTemplate.setMessageConverters(messageConverters);
-
-        String apiUrl = detailUrl + "%" + serviceKey + "&id=" + jobId;
-        System.out.println(apiUrl);
-        URI uri = new URI(apiUrl);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
-        String xmlData = response.getBody();
-
-        xmlData = xmlData.trim(); // 앞뒤 공백 제거
-        xmlData = xmlData.replaceFirst("^([\\W]+)<", "<"); // BOM 제거
-
-        logger.info("Received XML Data: " + xmlData);
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        InputSource is = new InputSource(new StringReader(xmlData));
-        Document document = builder.parse(is);
-
-        NodeList item = document.getElementsByTagName("item");
-        if (item.getLength() > 0) {
-            Element itemElement = (Element) item.item(0);
-
-            String age = getElementValue(itemElement, "age");
-            String ageLim = getElementValue(itemElement, "ageLim");
-            String jobTitle = getElementValue(itemElement, "wantedTitle");
-            String wantedNum = getElementValue(itemElement, "clltPrnnum");
-            String start = getElementValue(itemElement, "frAcptDd");
-            String end = getElementValue(itemElement, "toAcptDd");
-            String detailCont = getElementValue(itemElement, "detCnts");
-            String clerkphone = getElementValue(itemElement, "clerkContt");
-            String hmUrl = getElementValue(itemElement, "homepage");
-            String companyName = getElementValue(itemElement, "plbizNm");
-            String workAddr = getElementValue(itemElement, "plDetAddr");
-
-            return new JobPostDetailDto(jobId, age, ageLim, jobTitle,wantedNum ,start, end, detailCont, clerkphone, hmUrl, companyName, workAddr);
-        } else {
-            throw new Exception("No details for jobId: " + jobId);
-        }
     }
 }
 

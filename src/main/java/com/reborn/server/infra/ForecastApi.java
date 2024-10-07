@@ -1,5 +1,6 @@
 package com.reborn.server.infra;
 
+import com.reborn.server.domain.job.application.JobPostDetailService;
 import com.reborn.server.domain.job.application.JobPostService;
 import com.reborn.server.domain.job.dto.JobPostDetailDto;
 import com.reborn.server.domain.job.dto.JobPostDto;
@@ -23,6 +24,7 @@ public class ForecastApi {
     private final RestTemplate restTemplate;
 
     private final JobPostService jobPostService;
+    private final JobPostDetailService jobPostDetailService;
 
     @Value("${openApi.service-key}")
     private String serviceKey;
@@ -42,7 +44,7 @@ public class ForecastApi {
 
     @GetMapping("/detail")
     public ResponseEntity<JobPostDetailDto> getJobPostDetail(@RequestParam String jobId) throws Exception {
-        JobPostDetailDto jobPostDetail = jobPostService.getJobPostDetail(restTemplate, detailUrl, serviceKey, jobId);
+        JobPostDetailDto jobPostDetail = jobPostDetailService.getJobPostDetail(restTemplate, detailUrl, serviceKey, jobId);
         return new ResponseEntity<>(jobPostDetail,HttpStatus.OK);
     }
 }
