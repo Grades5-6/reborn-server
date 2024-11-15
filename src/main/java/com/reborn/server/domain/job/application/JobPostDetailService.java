@@ -70,7 +70,7 @@ public class JobPostDetailService {
             String age = jobPostService.getElementValue(itemElement, "age");
             String ageLim = jobPostService.getElementValue(itemElement, "ageLim");
             String jobTitle = jobPostService.getElementValue(itemElement, "wantedTitle");
-            String wantedNum = jobPostService.getElementValue(itemElement, "clltPrnnum");
+            int wantedNum = Integer.parseInt(jobPostService.getElementValue(itemElement, "clltPrnnum"));
             String start = jobPostService.getElementValue(itemElement, "frAcptDd");
             String end = jobPostService.getElementValue(itemElement, "toAcptDd");
             String detailCont = jobPostService.getElementValue(itemElement, "detCnts");
