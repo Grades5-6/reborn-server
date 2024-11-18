@@ -4,6 +4,8 @@ import com.reborn.server.domain.auth.domain.oauth.OauthProvider;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -40,11 +42,12 @@ public class User {
     @Column(name = "region")
     private String region; // 동네
 
+    @ElementCollection
     @Column(name="interested_field")
-    private String interestedField; // 관심 분야
+    private List<String> interestedField; // 관심 분야
 
     @Builder
-    public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg, String rebornTemperature, String employmentStatus, String region, String interestedField) {
+    public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg, String rebornTemperature, String employmentStatus, String region, List<String> interestedField) {
         this.name = name;
         this.email = email;
         this.oauthProvider = oauthProvider;
@@ -64,4 +67,20 @@ public class User {
                 .profileImg(profileImg)
                 .build();
     }
+
+    public void updateUserProfile(String nickName, String profileImg, String employmentStatus) {
+        this.nickName = nickName;
+        this.profileImg = profileImg;
+        this.employmentStatus = employmentStatus;
+    }
+
+    public void updateUserInterests(List<String> interestedField) {
+        this.interestedField = interestedField;
+    }
+
+    public void updateUserRegion(String region) {
+        this.nickName = region;
+    }
+
+
 }
