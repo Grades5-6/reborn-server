@@ -62,11 +62,9 @@ public class User {
                 .build();
     }
 
-    public User updateOnboardingInfo(String employmentStatus, String region, String interestedField) {
-        return User.builder()
-                .employmentStatus(employmentStatus)
-                .region(region)
-                .interestedField(interestedField)
-                .build();
+    public void updateOnboardingInfo(String employmentStatus, String region, String interestedField) {
+        this.employmentStatus = employmentStatus;
+        this.region = region;
+        this.interestedField = interestedField;
     }
 }
