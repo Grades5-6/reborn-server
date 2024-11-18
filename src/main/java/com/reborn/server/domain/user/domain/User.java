@@ -4,8 +4,6 @@ import com.reborn.server.domain.auth.domain.oauth.OauthProvider;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -33,13 +31,29 @@ public class User {
     @Column(name = "profile_image")
     private String profileImg;
 
+    @Column(name = "reborn_temperature")
+    private String rebornTemperature; // 리본 온도
+
+    @Column(name = "employment_status")
+    private String employmentStatus; // "재직" or "퇴직"
+
+    @Column(name = "region")
+    private String region; // 동네
+
+    @Column(name="interested_field")
+    private String interestedField; // 관심 분야
+
     @Builder
-    public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg) {
+    public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg, String rebornTemperature, String employmentStatus, String region, String interestedField) {
         this.name = name;
         this.email = email;
         this.oauthProvider = oauthProvider;
         this.introduce = introduce;
         this.profileImg = profileImg;
+        this.rebornTemperature = rebornTemperature;
+        this.employmentStatus = employmentStatus;
+        this.region = region;
+        this.interestedField = interestedField;
     }
 
     public static User of(String name, String email, OauthProvider oauthProvider, String profileImg) {
