@@ -1,9 +1,10 @@
 package com.reborn.server.domain.user.dto;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -11,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class OnboardingDto {
     private String employmentStatus;
     private String region;
-    private String interestedField;
+    private List<String> interestedField;
 
 }

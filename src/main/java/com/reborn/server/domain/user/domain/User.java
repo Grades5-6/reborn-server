@@ -84,7 +84,7 @@ public class User {
     }
 
 
-    public void updateOnboardingInfo(String employmentStatus, String region, String interestedField) {
+    public void updateOnboardingInfo(String employmentStatus, String region, List<String> interestedField) {
         this.employmentStatus = employmentStatus;
         this.region = region;
         this.interestedField = interestedField;
