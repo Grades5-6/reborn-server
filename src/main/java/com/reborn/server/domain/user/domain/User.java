@@ -4,6 +4,7 @@ import com.reborn.server.domain.auth.domain.oauth.OauthProvider;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 import java.util.List;
 
 @Getter
@@ -83,4 +84,9 @@ public class User {
     }
 
 
+    public void updateOnboardingInfo(String employmentStatus, String region, String interestedField) {
+        this.employmentStatus = employmentStatus;
+        this.region = region;
+        this.interestedField = interestedField;
+    }
 }
