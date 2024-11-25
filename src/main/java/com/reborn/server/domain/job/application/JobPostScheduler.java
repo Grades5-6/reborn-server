@@ -3,11 +3,10 @@ package com.reborn.server.domain.job.application;
 import com.reborn.server.domain.job.dao.JobPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +26,5 @@ public class JobPostScheduler {
         jobPostService.syncJobData(restTemplate, baseUrl, serviceKey);
         jobPostService.deleteExpiredJobPosts();
     }
-
 
 }
