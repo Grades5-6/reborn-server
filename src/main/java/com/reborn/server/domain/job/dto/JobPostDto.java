@@ -1,6 +1,5 @@
 package com.reborn.server.domain.job.dto;
 
-import com.reborn.server.domain.job.domain.JobPost;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,15 +29,4 @@ public class JobPostDto {
         this.end = end;
     }
 
-    public static JobPostDto from(JobPost jobPost){
-        return JobPostDto.builder()
-                .jobId(jobPost.getJobId())
-                .jobName(jobPost.getJobName())
-                .companyName(jobPost.getCompanyName())
-                .workLocation(jobPost.getWorkLocation())
-                .status(jobPost.getStatus())
-                .start(jobPost.getStart())
-                .end(jobPost.getEnd())
-                .build();
-    }
 }

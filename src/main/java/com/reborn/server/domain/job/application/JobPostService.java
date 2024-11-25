@@ -1,7 +1,9 @@
 package com.reborn.server.domain.job.application;
 
+import com.reborn.server.domain.job.dao.JobPostDetailRepository;
 import com.reborn.server.domain.job.dao.JobPostRepository;
 import com.reborn.server.domain.job.domain.JobPost;
+import com.reborn.server.domain.job.domain.JobPostDetail;
 import com.reborn.server.domain.job.dto.JobPostDetailDto;
 import com.reborn.server.domain.job.dto.JobPostDto;
 import com.reborn.server.infra.ForecastApi;
@@ -29,12 +31,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class JobPostService {
 
     private final JobPostRepository jobPostRepository;
+    private final JobPostDetailRepository jobPostDetailRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(ForecastApi.class);
 
 
@@ -162,6 +167,13 @@ public class JobPostService {
     public void deleteExpiredJobPosts() {
         LocalDate today = LocalDate.now();
         jobPostRepository.deleteByEndBefore(today.toString());
+    }
+
+    public List<JobPostDetailDto> getAllJobPosts() {
+        return jobPostDetailRepository.findAll()
+                .stream()
+                .map(JobPostDetailDto::from)
+                .collect(Collectors.toList());
     }
 }
 
