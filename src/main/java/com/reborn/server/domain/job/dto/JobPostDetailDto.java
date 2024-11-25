@@ -1,5 +1,6 @@
 package com.reborn.server.domain.job.dto;
 
+import com.reborn.server.domain.job.domain.JobPostDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class JobPostDetailDto {
-    // 필요한 정보 프론트로 전송
+
     private String jobId; // 직업공고 id
     private String age; // 지원 연령
     private String ageLim; // 지원 연령 제한
@@ -23,18 +24,36 @@ public class JobPostDetailDto {
     private String end; // 접수 마감 일자
     private int wantedNum; // 채용 인원
 
-    public JobPostDetailDto(String jobId, String age, String ageLim, String jobTitle, int wantedNum,String start, String end, String detailCont, String clerkphone, String hmUrl, String companyName, String  workAddr) {
+    public JobPostDetailDto(String jobId, String age, String ageLim, String jobTitle, String start, String end, String detailCont, String clerkphone, String hmUrl, String companyName, String workAddr, int wantedNum) {
         this.jobId = jobId;
-        this.age=age;
-        this.ageLim=ageLim;
+        this.age = age;
+        this.ageLim = ageLim;
         this.jobTitle = jobTitle;
         this.wantedNum = wantedNum;
         this.start = start;
-        this.end=end;
-        this.detailCont=detailCont;
-        this.clerkphone=clerkphone;
-        this.hmUrl=hmUrl;
-        this.companyName=companyName;
+        this.end = end;
+        this.detailCont = detailCont;
+        this.clerkphone = clerkphone;
+        this.hmUrl = hmUrl;
+        this.companyName = companyName;
         this.workAddr = workAddr;
+    }
+
+    public static JobPostDetailDto from(JobPostDetail jobPostDetail) {
+        return JobPostDetailDto.builder()
+                .jobId(jobPostDetail.getJobId())
+                .age(jobPostDetail.getAge())
+                .ageLim(jobPostDetail.getAgeLim())
+                .jobTitle(jobPostDetail.getJobTitle())
+                .detailCont(jobPostDetail.getDetailCont())
+                .clerkphone(jobPostDetail.getClerkphone())
+                .companyName(jobPostDetail.getCompanyName())
+                .hmUrl(jobPostDetail.getHmUrl())
+                .workAddr(jobPostDetail.getWorkAddr())
+                .status(jobPostDetail.getStatus())
+                .start(jobPostDetail.getStart())
+                .end(jobPostDetail.getEnd())
+                .wantedNum(jobPostDetail.getWantedNum())
+                .build();
     }
 }
