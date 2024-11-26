@@ -2,6 +2,7 @@ package com.reborn.server.domain.user.api;
 
 import com.reborn.server.domain.user.application.OnboardingService;
 import com.reborn.server.domain.user.domain.User;
+import com.reborn.server.domain.user.dto.JobOnboardingDto;
 import com.reborn.server.domain.user.dto.OnboardingDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,8 +26,17 @@ public class OnboardingApi {
     @PostMapping("/save")
     public ResponseEntity<Void> saveOnboardingInfo(@RequestBody OnboardingDto onboardingDto){
         try {
-            Long userId = getUserIdFromAuthentication();
-            onboardingService.saveOnboardingInfo(onboardingDto, userId);
+            onboardingService.saveOnboardingInfo(onboardingDto);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (EntityNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/save/job")
+    public ResponseEntity<Void> saveJobOnboardingData(@RequestBody JobOnboardingDto jobOnboardingDto){
+        try {
+            onboardingService.saveJobOnboardingData(jobOnboardingDto);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

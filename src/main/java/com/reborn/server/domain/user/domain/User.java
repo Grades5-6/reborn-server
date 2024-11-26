@@ -47,6 +47,16 @@ public class User {
     @Column(name="interested_field")
     private List<String> interestedField; // 관심 분야
 
+    // 일자리 온보딩 화면
+    @Column(name="sex")
+    private String sex; // 성별
+
+    @Column(name = "year")
+    private Integer year; // 태어난 연도
+
+    @Column(name="certificate")
+    private String certificate;
+
     @Builder
     public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg, String rebornTemperature, String employmentStatus, String region, List<String> interestedField) {
         this.name = name;
@@ -88,5 +98,11 @@ public class User {
         this.employmentStatus = employmentStatus;
         this.region = region;
         this.interestedField = interestedField;
+    }
+
+    public void updateJobOnboardingData(String sex, int year, String certificate) {
+        this.sex= sex;
+        this.year=year;
+        this.certificate=certificate;
     }
 }
