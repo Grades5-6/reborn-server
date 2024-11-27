@@ -6,6 +6,7 @@ import com.reborn.server.domain.job.dto.JobPostSearchDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,14 +25,34 @@ public class JobPostSearchService {
         List<JobPostDetail> jobPosts = jobPostDetailRepository.findAll(); // 모든 직업공고를 가져옴
 
         return jobPosts.stream()
-                .filter(jobPost -> jobPost.getJobTitle().contains(keyword)) // jobTitle에 keyword가 포함되는지 필터링
-                .map(jobPost -> JobPostSearchDto.builder() // JobPostSearchDto로 변환
-                        .jobId(jobPost.getJobId())
-                        .jobTitle(jobPost.getJobTitle())
-                        .companyName(jobPost.getCompanyName())
-                        .workAddr(jobPost.getWorkAddr())
-                        .hmUrl(jobPost.getHmUrl())
-                        .build())
+                .map(jobPost -> {
+                    int score = 0;
+                    if (jobPost.getJobTitle().contains(keyword)) {
+                        score += 10; // 제목에 포함
+                    }
+                    if (jobPost.getDetailCont().contains(keyword)) {
+                        score += 5; // 세부 내용에 포함
+                    }
+                    if (jobPost.getCompanyName().contains(keyword)) {
+                        score += 3; // 회사 이름에 포함
+                    }
+                    if (jobPost.getWorkAddr().contains(keyword)) {
+                        score += 3; // 회사 이름에 포함
+                    }
+                    return new AbstractMap.SimpleEntry<>(jobPost, score);
+                })
+                .filter(entry -> entry.getValue() > 0) // 점수가 0보다 큰 경우만 필터링
+                .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue())) // 점수에 따라 정렬
+                .map(entry -> {
+                    JobPostDetail jobPost = entry.getKey();
+                    return JobPostSearchDto.builder()
+                            .jobId(jobPost.getJobId())
+                            .jobTitle(jobPost.getJobTitle())
+                            .companyName(jobPost.getCompanyName())
+                            .workAddr(jobPost.getWorkAddr())
+                            .hmUrl(jobPost.getHmUrl())
+                            .build();
+                })
                 .collect(Collectors.toList()); // 리스트로 수집
     }
 }
