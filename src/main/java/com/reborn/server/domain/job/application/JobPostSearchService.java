@@ -37,7 +37,7 @@ public class JobPostSearchService {
                         score += 3; // 회사 이름에 포함
                     }
                     if (jobPost.getWorkAddr().contains(keyword)) {
-                        score += 3; // 회사 이름에 포함
+                        score += 3; // 지역에 포함
                     }
                     return new AbstractMap.SimpleEntry<>(jobPost, score);
                 })
