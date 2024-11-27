@@ -16,10 +16,12 @@ public class MypageService {
 
     private final UserRepository userRepository;
 
+    String userName = "김영숙";
+
     @Transactional
-    public UserMyPageResponse getUserMypage(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+    public UserMyPageResponse getUserMypage() {
+        User user = userRepository.findByName(userName)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userName));
 
         return new UserMyPageResponse(
                 user.getNickName(),
@@ -32,27 +34,27 @@ public class MypageService {
     }
 
     @Transactional
-    public void updateUserProfile(Long userId, String nickName, String profileImg, String employmentStatus) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+    public void updateUserProfile(String nickName, String profileImg, String employmentStatus) {
+        User user = userRepository.findByName(userName)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userName));
 
         user.updateUserProfile(nickName, profileImg, employmentStatus);
         userRepository.save(user);
     }
 
     @Transactional
-    public void updateUserInterests(Long userId, List<String> interestedField) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+    public void updateUserInterests(List<String> interestedField) {
+        User user = userRepository.findByName(userName)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userName));
 
         user.updateUserInterests(interestedField);
         userRepository.save(user);
     }
 
     @Transactional
-    public void updateUserRegion(Long userId, String region) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+    public void updateUserRegion(String region) {
+        User user = userRepository.findByName(userName)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userName));
 
         user.updateUserRegion(region);
         userRepository.save(user);

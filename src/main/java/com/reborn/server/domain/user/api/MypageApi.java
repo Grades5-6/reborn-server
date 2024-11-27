@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.reborn.server.global.util.ApiUtil.getUserIdFromAuthentication;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user/mypage")
@@ -25,8 +23,7 @@ public class MypageApi {
     @GetMapping()
     public ResponseEntity<UserMyPageResponse> getUserProfile() {
         try {
-            Long userId = getUserIdFromAuthentication();
-            UserMyPageResponse userMyPageResponse = mypageService.getUserMypage(userId);
+            UserMyPageResponse userMyPageResponse = mypageService.getUserMypage();
             return ResponseEntity.ok(userMyPageResponse);
 
         } catch (EntityNotFoundException e){
@@ -40,8 +37,7 @@ public class MypageApi {
     @PatchMapping()
     public ResponseEntity<String> updateUserProfile(@RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
         try {
-            Long userId = getUserIdFromAuthentication();
-            mypageService.updateUserProfile(userId,
+            mypageService.updateUserProfile(
                     userProfileUpdateRequest.getNickName(),
                     userProfileUpdateRequest.getProfileImg(),
                     userProfileUpdateRequest.getEmploymentStatus());
@@ -58,8 +54,7 @@ public class MypageApi {
     @PatchMapping("/interests")
     public ResponseEntity<String> updateUserInterests(@RequestBody UserInterestsUpdateRequest userInterestsUpdateRequest) {
         try {
-            Long userId = getUserIdFromAuthentication();
-            mypageService.updateUserInterests(userId, userInterestsUpdateRequest.getInterestedField());
+            mypageService.updateUserInterests(userInterestsUpdateRequest.getInterestedField());
             return ResponseEntity.ok("관심 분야가 수정되었습니다.");
 
         } catch (EntityNotFoundException e){
@@ -73,8 +68,7 @@ public class MypageApi {
     @PatchMapping("/region")
     public ResponseEntity<String> updateUserRegion(@RequestBody UserRegionUpdateRequest userRegionUpdateRequest) {
         try {
-            Long userId = getUserIdFromAuthentication();
-            mypageService.updateUserRegion(userId, userRegionUpdateRequest.getRegion());
+            mypageService.updateUserRegion(userRegionUpdateRequest.getRegion());
             return ResponseEntity.ok("나의 동네가 수정되었습니다.");
 
         } catch (EntityNotFoundException e){
