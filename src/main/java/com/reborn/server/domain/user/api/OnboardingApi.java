@@ -1,9 +1,8 @@
 package com.reborn.server.domain.user.api;
 
 import com.reborn.server.domain.user.application.OnboardingService;
-import com.reborn.server.domain.user.domain.User;
 import com.reborn.server.domain.user.dto.JobOnboardingDto;
-import com.reborn.server.domain.user.dto.OnboardingDto;
+import com.reborn.server.domain.user.dto.MainOnboardingDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.reborn.server.global.util.ApiUtil.getUserIdFromAuthentication;
-
 @RestController
 @RequestMapping("/api/onboarding")
 @RequiredArgsConstructor
@@ -24,9 +21,9 @@ public class OnboardingApi {
     private final OnboardingService onboardingService;
 
     @PostMapping("/save")
-    public ResponseEntity<Void> saveOnboardingInfo(@RequestBody OnboardingDto onboardingDto){
+    public ResponseEntity<Void> saveMainOnboardingInfo(@RequestBody MainOnboardingDto mainOnboardingDto){
         try {
-            onboardingService.saveOnboardingInfo(onboardingDto);
+            onboardingService.saveMainOnboardingData(mainOnboardingDto);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

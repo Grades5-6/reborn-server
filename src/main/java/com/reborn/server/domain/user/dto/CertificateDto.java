@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public class OnboardingDto {
-    private String employmentStatus;
-    private String region;
-    private List<String> interestedField;
-
+public class CertificateDto {
+    private String name; // 자격증 이름
+    private String agency; // 발급 기관
+    private LocalDate issueDate; // 발급일
+    private LocalDate expiryDate; // 만료일
 }
