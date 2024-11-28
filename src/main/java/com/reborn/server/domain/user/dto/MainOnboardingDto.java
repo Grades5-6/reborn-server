@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-public class OnboardingDto {
+public class MainOnboardingDto {
     private String employmentStatus;
     private String region;
     private List<String> interestedField;
