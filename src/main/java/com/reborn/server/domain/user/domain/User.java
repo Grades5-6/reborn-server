@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -54,8 +55,9 @@ public class User {
     @Column(name = "year")
     private Integer year; // 태어난 연도
 
-    @Column(name="certificate")
-    private String certificate;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<Certificate> certificate = new ArrayList<>();
 
     @Builder
     public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg, String rebornTemperature, String employmentStatus, String region, List<String> interestedField) {
@@ -90,7 +92,7 @@ public class User {
     }
 
     public void updateUserRegion(String region) {
-        this.nickName = region;
+        this.region = region;
     }
 
 
@@ -100,9 +102,21 @@ public class User {
         this.interestedField = interestedField;
     }
 
-    public void updateJobOnboardingData(String sex, int year, String certificate) {
+    public void updateJobOnboardingData(String sex, int year, List<Certificate> certificate) {
         this.sex= sex;
         this.year=year;
-        this.certificate=certificate;
+//      this.certificate=certificate;
+
+        this.certificate.clear();
+        this.certificate.addAll(certificate);
+    }
+
+    public void addCertificate(Certificate certificate) {
+        this.certificate.add(certificate);
+    }
+
+
+    public void removeCertificate(Certificate certificate) {
+        this.certificate.remove(certificate);
     }
 }
