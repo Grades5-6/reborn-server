@@ -1,4 +1,4 @@
-package com.reborn.server.domain.auth.config;
+package com.reborn.server.infra.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
