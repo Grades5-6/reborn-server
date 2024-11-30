@@ -2,7 +2,7 @@ package com.reborn.server.domain.job.application;
 
 import com.reborn.server.domain.job.dao.JobPostRepository;
 import com.reborn.server.domain.job.dto.JobPostDetailDto;
-import com.reborn.server.infra.ForecastApi;
+import com.reborn.server.domain.job.api.ForecastApi;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,10 +67,12 @@ public class JobPostDetailService {
         if (item.getLength() > 0) {
             Element itemElement = (Element) item.item(0);
 
+             //   public JobPostDetailDto(String jobId, String age, String ageLim, String jobTitle, int wantedNum, String start, String end, String detailCont, String clerkphone, String hmUrl, String companyName, String workAddr) {
+
+
             String age = jobPostService.getElementValue(itemElement, "age");
             String ageLim = jobPostService.getElementValue(itemElement, "ageLim");
             String jobTitle = jobPostService.getElementValue(itemElement, "wantedTitle");
-            String wantedNum = jobPostService.getElementValue(itemElement, "clltPrnnum");
             String start = jobPostService.getElementValue(itemElement, "frAcptDd");
             String end = jobPostService.getElementValue(itemElement, "toAcptDd");
             String detailCont = jobPostService.getElementValue(itemElement, "detCnts");
@@ -78,8 +80,9 @@ public class JobPostDetailService {
             String hmUrl = jobPostService.getElementValue(itemElement, "homepage");
             String companyName = jobPostService.getElementValue(itemElement, "plbizNm");
             String workAddr = jobPostService.getElementValue(itemElement, "plDetAddr");
+            int wantedNum = Integer.parseInt(jobPostService.getElementValue(itemElement, "clltPrnnum"));
 
-            return new JobPostDetailDto(jobId, age, ageLim, jobTitle,wantedNum ,start, end, detailCont, clerkphone, hmUrl, companyName, workAddr);
+            return new JobPostDetailDto(jobId, age, ageLim, jobTitle ,start, end, detailCont, clerkphone, hmUrl, companyName, workAddr, wantedNum);
         } else {
             throw new Exception("No details for jobId: " + jobId);
         }

@@ -4,7 +4,9 @@ import com.reborn.server.domain.auth.domain.oauth.OauthProvider;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,13 +35,41 @@ public class User {
     @Column(name = "profile_image")
     private String profileImg;
 
+    @Column(name = "reborn_temperature")
+    private String rebornTemperature; // 리본 온도
+
+    @Column(name = "employment_status")
+    private String employmentStatus; // "재직" or "퇴직"
+
+    @Column(name = "region")
+    private String region; // 동네
+
+    @ElementCollection
+    @Column(name="interested_field")
+    private List<String> interestedField; // 관심 분야
+
+    // 일자리 온보딩 화면
+    @Column(name="sex")
+    private String sex; // 성별
+
+    @Column(name = "year")
+    private Integer year; // 태어난 연도
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<Certificate> certificate = new ArrayList<>();
+
     @Builder
-    public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg) {
+    public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg, String rebornTemperature, String employmentStatus, String region, List<String> interestedField) {
         this.name = name;
         this.email = email;
         this.oauthProvider = oauthProvider;
         this.introduce = introduce;
         this.profileImg = profileImg;
+        this.rebornTemperature = rebornTemperature;
+        this.employmentStatus = employmentStatus;
+        this.region = region;
+        this.interestedField = interestedField;
     }
 
     public static User of(String name, String email, OauthProvider oauthProvider, String profileImg) {
@@ -49,5 +79,44 @@ public class User {
                 .oauthProvider(oauthProvider)
                 .profileImg(profileImg)
                 .build();
+    }
+
+    public void updateUserProfile(String nickName, String profileImg, String employmentStatus) {
+        this.nickName = nickName;
+        this.profileImg = profileImg;
+        this.employmentStatus = employmentStatus;
+    }
+
+    public void updateUserInterests(List<String> interestedField) {
+        this.interestedField = interestedField;
+    }
+
+    public void updateUserRegion(String region) {
+        this.region = region;
+    }
+
+
+    public void updateOnboardingInfo(String employmentStatus, String region, List<String> interestedField) {
+        this.employmentStatus = employmentStatus;
+        this.region = region;
+        this.interestedField = interestedField;
+    }
+
+    public void updateJobOnboardingData(String sex, int year, List<Certificate> certificate) {
+        this.sex= sex;
+        this.year=year;
+//      this.certificate=certificate;
+
+        this.certificate.clear();
+        this.certificate.addAll(certificate);
+    }
+
+    public void addCertificate(Certificate certificate) {
+        this.certificate.add(certificate);
+    }
+
+
+    public void removeCertificate(Certificate certificate) {
+        this.certificate.remove(certificate);
     }
 }
