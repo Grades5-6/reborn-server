@@ -2,7 +2,6 @@ package com.reborn.server.domain.auth.infra.kakao;
 
 import com.reborn.server.domain.auth.domain.oauth.OauthApiClient;
 import com.reborn.server.domain.auth.domain.oauth.OauthInfoResponse;
-import com.reborn.server.domain.auth.domain.oauth.OauthLoginParams;
 import com.reborn.server.domain.auth.domain.oauth.OauthProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,8 +9,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Component
