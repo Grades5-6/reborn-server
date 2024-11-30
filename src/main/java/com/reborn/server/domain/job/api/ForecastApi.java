@@ -1,4 +1,4 @@
-package com.reborn.server.infra;
+package com.reborn.server.domain.job.api;
 
 import com.reborn.server.domain.job.application.JobPostDetailService;
 import com.reborn.server.domain.job.application.JobPostService;

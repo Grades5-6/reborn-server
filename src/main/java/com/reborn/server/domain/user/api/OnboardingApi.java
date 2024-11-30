@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OnboardingApi {
     private final OnboardingService onboardingService;
 
-    @PostMapping("/save")
+    @PostMapping()
     public ResponseEntity<Void> saveMainOnboardingInfo(@RequestBody MainOnboardingDto mainOnboardingDto){
         try {
             onboardingService.saveMainOnboardingData(mainOnboardingDto);
@@ -30,7 +30,7 @@ public class OnboardingApi {
         }
     }
 
-    @PostMapping("/save/job")
+    @PostMapping("/jobs")
     public ResponseEntity<Void> saveJobOnboardingData(@RequestBody JobOnboardingDto jobOnboardingDto){
         try {
             onboardingService.saveJobOnboardingData(jobOnboardingDto);

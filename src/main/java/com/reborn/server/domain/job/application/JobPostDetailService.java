@@ -2,7 +2,7 @@ package com.reborn.server.domain.job.application;
 
 import com.reborn.server.domain.job.dao.JobPostRepository;
 import com.reborn.server.domain.job.dto.JobPostDetailDto;
-import com.reborn.server.infra.ForecastApi;
+import com.reborn.server.domain.job.api.ForecastApi;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
