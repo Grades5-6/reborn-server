@@ -3,10 +3,9 @@ package com.reborn.server.domain.job.application;
 import com.reborn.server.domain.job.dao.JobPostDetailRepository;
 import com.reborn.server.domain.job.dao.JobPostRepository;
 import com.reborn.server.domain.job.domain.JobPost;
-import com.reborn.server.domain.job.domain.JobPostDetail;
 import com.reborn.server.domain.job.dto.JobPostDetailDto;
 import com.reborn.server.domain.job.dto.JobPostDto;
-import com.reborn.server.infra.ForecastApi;
+import com.reborn.server.domain.job.api.ForecastApi;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +106,6 @@ public class JobPostService {
 
     // api 호출
     public void syncJobData(RestTemplate restTemplate, String baseUrl, String serviceKey) throws Exception {
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));

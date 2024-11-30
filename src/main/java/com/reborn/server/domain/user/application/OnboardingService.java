@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OnboardingService {
     private final UserRepository userRepository;
-    public User saveMainOnboardingData(MainOnboardingDto mainOnboardingDto) {
+    public void saveMainOnboardingData(MainOnboardingDto mainOnboardingDto) {
         String userName = "김영숙";
         User user = userRepository.findByName(userName)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with name: " + userName));
         user.updateOnboardingInfo(mainOnboardingDto.getEmploymentStatus(), mainOnboardingDto.getRegion(), mainOnboardingDto.getInterestedField());
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
-    public User saveJobOnboardingData(JobOnboardingDto jobOnboardingDto){
+    public void saveJobOnboardingData(JobOnboardingDto jobOnboardingDto){
         String userName = "김영숙";
         User user = userRepository.findByName(userName)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with name: " + userName));
@@ -39,6 +39,6 @@ public class OnboardingService {
                                 .collect(Collectors.toList());
         user.getCertificate().addAll(certificates);
         user.updateJobOnboardingData(jobOnboardingDto.getSex(), jobOnboardingDto.getYear() , certificates);
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }

@@ -21,6 +21,7 @@ public class AuthApi {
     @PostMapping("/kakao")
     public ResponseEntity<?> loginKakao(@RequestBody KakaoLoginParams params, HttpServletResponse response) {
         Tokens tokens = oauthLoginService.login(params);
+        System.out.println("loginKakao finished");
         TokenResponse tokenResponseDto = JwtUtil.setJwtResponse(response, tokens);
         return ResponseEntity.ok(tokenResponseDto);
     }

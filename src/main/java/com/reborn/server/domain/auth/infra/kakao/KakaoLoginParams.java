@@ -12,17 +12,10 @@ import org.springframework.util.MultiValueMap;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaoLoginParams implements OauthLoginParams {
-    private String authorizationCode;
+    private String accessToken;
 
     @Override
     public OauthProvider oauthProvider() {
         return OauthProvider.KAKAO;
-    }
-
-    @Override
-    public MultiValueMap<String, String> makeBody() {
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("code", authorizationCode);
-        return body;
     }
 }

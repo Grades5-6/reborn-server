@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/onboarding")
+@RequestMapping("/api/users/onboarding")
 @RequiredArgsConstructor
 @Tag(name = "onboarding-api")
 public class OnboardingApi {
     private final OnboardingService onboardingService;
 
-    @PostMapping("/save")
+    @PostMapping()
     public ResponseEntity<Void> saveMainOnboardingInfo(@RequestBody MainOnboardingDto mainOnboardingDto){
         try {
             onboardingService.saveMainOnboardingData(mainOnboardingDto);
@@ -30,7 +30,7 @@ public class OnboardingApi {
         }
     }
 
-    @PostMapping("/save/job")
+    @PostMapping("/jobs")
     public ResponseEntity<Void> saveJobOnboardingData(@RequestBody JobOnboardingDto jobOnboardingDto){
         try {
             onboardingService.saveJobOnboardingData(jobOnboardingDto);
