@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/onboarding")
+@RequestMapping("/api/users/onboarding")
 @RequiredArgsConstructor
 @Tag(name = "onboarding-api")
 public class OnboardingApi {

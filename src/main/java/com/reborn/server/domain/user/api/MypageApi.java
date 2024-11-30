@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user/mypage")
+@RequestMapping("/api/users/mypage")
 @Tag(name = "mypage-api")
 public class MypageApi {
 
@@ -25,7 +25,6 @@ public class MypageApi {
         try {
             UserMyPageResponse userMyPageResponse = mypageService.getUserMypage();
             return ResponseEntity.ok(userMyPageResponse);
-
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException e){
@@ -34,7 +33,7 @@ public class MypageApi {
     }
 
     // 프로필 수정
-    @PatchMapping()
+    @PutMapping()
     public ResponseEntity<String> updateUserProfile(@RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
         try {
             mypageService.updateUserProfile(
@@ -51,7 +50,7 @@ public class MypageApi {
     }
 
     // 관심 분야 수정
-    @PatchMapping("/interests")
+    @PutMapping("/interests")
     public ResponseEntity<String> updateUserInterests(@RequestBody UserInterestsUpdateRequest userInterestsUpdateRequest) {
         try {
             mypageService.updateUserInterests(userInterestsUpdateRequest.getInterestedField());

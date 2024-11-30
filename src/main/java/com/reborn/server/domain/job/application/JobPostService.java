@@ -106,7 +106,6 @@ public class JobPostService {
 
     // api 호출
     public void syncJobData(RestTemplate restTemplate, String baseUrl, String serviceKey) throws Exception {
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
