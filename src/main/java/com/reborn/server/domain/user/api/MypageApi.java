@@ -33,7 +33,7 @@ public class MypageApi {
     }
 
     // 프로필 수정
-    @PutMapping()
+    @PatchMapping()
     public ResponseEntity<String> updateUserProfile(@RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
         try {
             mypageService.updateUserProfile(
@@ -50,7 +50,7 @@ public class MypageApi {
     }
 
     // 관심 분야 수정
-    @PutMapping("/interests")
+    @PatchMapping("/interests")
     public ResponseEntity<String> updateUserInterests(@RequestBody UserInterestsUpdateRequest userInterestsUpdateRequest) {
         try {
             mypageService.updateUserInterests(userInterestsUpdateRequest.getInterestedField());

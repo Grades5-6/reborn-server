@@ -30,10 +30,10 @@ public class LicenseApiClient {
     public List<LicenseResponseDto> fetchLicenses() {
         String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .queryParam("serviceKey", serviceKey)
-                .toUriString();
-        System.out.println(url);
+                .toUriString();;
+
         ResponseEntity<LicenseResponse> response = restTemplate.getForEntity(url, LicenseResponse.class);
-        System.out.println(response.getBody());
+
         return response.getBody().getBody().getItems().stream()
                 .map(item -> LicenseResponseDto.builder()
                         .jmcd(item.getJmcd())

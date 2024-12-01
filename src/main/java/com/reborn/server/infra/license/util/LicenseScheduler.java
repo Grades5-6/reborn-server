@@ -25,6 +25,5 @@ public class LicenseScheduler {
                 .map(LicenseResponseDto::toEntity)
                 .collect(Collectors.toList());
         licenseRepository.saveAll(licenses);
-        System.out.println("자격증 정보가 성공적으로 업데이트 되었습니다.");
     }
 }
