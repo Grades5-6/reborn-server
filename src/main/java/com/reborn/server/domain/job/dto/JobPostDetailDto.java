@@ -22,14 +22,12 @@ public class JobPostDetailDto {
     private String status; // 접수 상태
     private String start; // 접수 시작 일자
     private String end; // 접수 마감 일자
-    private int wantedNum; // 채용 인원
 
-    public JobPostDetailDto(String jobId, String age, String ageLim, String jobTitle, String start, String end, String detailCont, String clerkphone, String hmUrl, String companyName, String workAddr, int wantedNum) {
+    public JobPostDetailDto(String jobId, String age, String ageLim, String jobTitle, String start, String end, String detailCont, String clerkphone, String hmUrl, String companyName, String workAddr) {
         this.jobId = jobId;
         this.age = age;
         this.ageLim = ageLim;
         this.jobTitle = jobTitle;
-        this.wantedNum = wantedNum;
         this.start = start;
         this.end = end;
         this.detailCont = detailCont;
@@ -53,7 +51,6 @@ public class JobPostDetailDto {
                 .status(jobPostDetail.getStatus())
                 .start(jobPostDetail.getStart())
                 .end(jobPostDetail.getEnd())
-                .wantedNum(jobPostDetail.getWantedNum())
                 .build();
     }
 }

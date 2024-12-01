@@ -30,10 +30,9 @@ public class JobPostDetail {
     private String status; // 접수 상태
     private String start; // 접수 시작 일자
     private String end; // 접수 마감 일자
-    private int wantedNum; // 채용 인원
 
     @Builder
-    public JobPostDetail(String jobId, String age, String ageLim, String jobTitle, String detailCont, String clerkphone, String companyName, String hmUrl, String workAddr, String status, String start, String end, int wantedNum) {
+    public JobPostDetail(String jobId, String age, String ageLim, String jobTitle, String detailCont, String clerkphone, String companyName, String hmUrl, String workAddr, String status, String start, String end) {
         this.jobId = jobId;
         this.age = age;
         this.ageLim = ageLim;
@@ -46,7 +45,6 @@ public class JobPostDetail {
         this.status = status;
         this.start = start;
         this.end = end;
-        this.wantedNum = wantedNum;
     }
 
 

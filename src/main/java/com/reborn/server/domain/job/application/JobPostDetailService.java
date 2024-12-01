@@ -52,6 +52,7 @@ public class JobPostDetailService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
         String xmlData = response.getBody();
+        System.out.println("get job data");
 
         xmlData = xmlData.trim(); // 앞뒤 공백 제거
         xmlData = xmlData.replaceFirst("^([\\W]+)<", "<"); // BOM 제거
@@ -66,10 +67,6 @@ public class JobPostDetailService {
         NodeList item = document.getElementsByTagName("item");
         if (item.getLength() > 0) {
             Element itemElement = (Element) item.item(0);
-
-             //   public JobPostDetailDto(String jobId, String age, String ageLim, String jobTitle, int wantedNum, String start, String end, String detailCont, String clerkphone, String hmUrl, String companyName, String workAddr) {
-
-
             String age = jobPostService.getElementValue(itemElement, "age");
             String ageLim = jobPostService.getElementValue(itemElement, "ageLim");
             String jobTitle = jobPostService.getElementValue(itemElement, "wantedTitle");
@@ -80,13 +77,10 @@ public class JobPostDetailService {
             String hmUrl = jobPostService.getElementValue(itemElement, "homepage");
             String companyName = jobPostService.getElementValue(itemElement, "plbizNm");
             String workAddr = jobPostService.getElementValue(itemElement, "plDetAddr");
-            int wantedNum = Integer.parseInt(jobPostService.getElementValue(itemElement, "clltPrnnum"));
 
-            return new JobPostDetailDto(jobId, age, ageLim, jobTitle ,start, end, detailCont, clerkphone, hmUrl, companyName, workAddr, wantedNum);
+            return new JobPostDetailDto(jobId, age, ageLim, jobTitle ,start, end, detailCont, clerkphone, hmUrl, companyName, workAddr);
         } else {
             throw new Exception("No details for jobId: " + jobId);
         }
     }
-
-
 }

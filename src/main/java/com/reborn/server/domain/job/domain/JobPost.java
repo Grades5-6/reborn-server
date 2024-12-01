@@ -17,7 +17,6 @@ public class JobPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String jobId; // 직업공고 id
     private String jobName; // 공고 제목
     private String companyName; // 회사 이름
