@@ -2,7 +2,7 @@ package com.reborn.server.domain.job.application;
 
 import com.reborn.server.domain.job.dao.JobPostRepository;
 import com.reborn.server.domain.job.dto.JobPostDetailDto;
-import com.reborn.server.domain.job.api.ForecastApi;
+import com.reborn.server.infra.license.api.LicenseApiClient;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ import java.util.List;
 public class JobPostDetailService {
     private final JobPostRepository jobPostRepository;
     private final JobPostService jobPostService;
-    private static final Logger logger = LoggerFactory.getLogger(ForecastApi.class);
+    private static final Logger logger = LoggerFactory.getLogger(LicenseApiClient.class);
 
 
     // 직업 상세 정보 조회
@@ -65,20 +65,20 @@ public class JobPostDetailService {
         Document document = builder.parse(is);
 
         NodeList item = document.getElementsByTagName("item");
+
         if (item.getLength() > 0) {
             Element itemElement = (Element) item.item(0);
-            String age = jobPostService.getElementValue(itemElement, "age");
-            String ageLim = jobPostService.getElementValue(itemElement, "ageLim");
             String jobTitle = jobPostService.getElementValue(itemElement, "wantedTitle");
-            String start = jobPostService.getElementValue(itemElement, "frAcptDd");
-            String end = jobPostService.getElementValue(itemElement, "toAcptDd");
-            String detailCont = jobPostService.getElementValue(itemElement, "detCnts");
-            String clerkphone = jobPostService.getElementValue(itemElement, "clerkContt");
             String hmUrl = jobPostService.getElementValue(itemElement, "homepage");
             String companyName = jobPostService.getElementValue(itemElement, "plbizNm");
             String workAddr = jobPostService.getElementValue(itemElement, "plDetAddr");
 
-            return new JobPostDetailDto(jobId, age, ageLim, jobTitle ,start, end, detailCont, clerkphone, hmUrl, companyName, workAddr);
+            return JobPostDetailDto.builder()
+                    .jobTitle(jobTitle)
+                    .companyName(companyName)
+                    .workAddr(workAddr)
+                    .hmUrl(hmUrl)
+                    .build();
         } else {
             throw new Exception("No details for jobId: " + jobId);
         }
