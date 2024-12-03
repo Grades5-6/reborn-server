@@ -13,5 +13,4 @@ public class MainOnboardingDto {
     private String employmentStatus;
     private String region;
     private List<String> interestedField;
-
 }

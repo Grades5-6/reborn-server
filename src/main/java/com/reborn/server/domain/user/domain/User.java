@@ -1,6 +1,7 @@
 package com.reborn.server.domain.user.domain;
 
 import com.reborn.server.domain.auth.domain.oauth.OauthProvider;
+import com.reborn.server.domain.license.domain.License;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -57,7 +58,7 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
-    private List<Certificate> certificate = new ArrayList<>();
+    private List<License> licenses = new ArrayList<>();
 
     @Builder
     public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg, String rebornTemperature, String employmentStatus, String region, List<String> interestedField) {
@@ -102,21 +103,10 @@ public class User {
         this.interestedField = interestedField;
     }
 
-    public void updateJobOnboardingData(String sex, int year, List<Certificate> certificate) {
+    public void updateJobOnboardingData(String sex, int year, List<License> licenses) {
         this.sex= sex;
         this.year=year;
-//      this.certificate=certificate;
-
-        this.certificate.clear();
-        this.certificate.addAll(certificate);
-    }
-
-    public void addCertificate(Certificate certificate) {
-        this.certificate.add(certificate);
-    }
-
-
-    public void removeCertificate(Certificate certificate) {
-        this.certificate.remove(certificate);
+        this.licenses.clear();
+        this.licenses.addAll(licenses);
     }
 }

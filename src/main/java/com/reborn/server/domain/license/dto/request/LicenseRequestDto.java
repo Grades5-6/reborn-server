@@ -1,4 +1,4 @@
-package com.reborn.server.domain.license.dto.response;
+package com.reborn.server.domain.license.dto.request;
 
 import com.reborn.server.domain.license.domain.License;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class LicenseResponseDto {
+public class LicenseRequestDto {
     private String jmfldnm;
     private String seriesnm;
 

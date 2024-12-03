@@ -23,13 +23,14 @@ public class LicenseService {
                 .collect(Collectors.toList());
     }
 
+    public License findLicenseByJmfldnm(String jmfldnm) {
+        return licenseRepository.findByJmfldnm(jmfldnm)
+                .orElseThrow(() -> new IllegalArgumentException("License not found with jmfldnm: " + jmfldnm));
+    }
+
     private LicenseResponseDto convertToDto(License license) {
         return LicenseResponseDto.builder()
-                .jmcd(license.getJmcd())
                 .jmfldnm(license.getJmfldnm())
-                .mdobligfldnm(license.getMdobligfldnm())
-                .obligfldnm(license.getObligfldnm())
-                .qualgbnm(license.getQualgbnm())
                 .seriesnm(license.getSeriesnm())
                 .build();
     }

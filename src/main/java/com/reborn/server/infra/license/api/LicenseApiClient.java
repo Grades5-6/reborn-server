@@ -34,13 +34,9 @@ public class LicenseApiClient {
 
         ResponseEntity<LicenseResponse> response = restTemplate.getForEntity(url, LicenseResponse.class);
 
-        return response.getBody().getBody().getItems().stream()
+        return Objects.requireNonNull(response.getBody()).getBody().getItems().stream()
                 .map(item -> LicenseResponseDto.builder()
-                        .jmcd(item.getJmcd())
                         .jmfldnm(item.getJmfldnm())
-                        .mdobligfldnm(item.getMdobligfldnm())
-                        .obligfldnm(item.getObligfldnm())
-                        .qualgbnm(item.getQualgbnm())
                         .seriesnm(item.getSeriesnm())
                         .build())
                 .collect(Collectors.toList());

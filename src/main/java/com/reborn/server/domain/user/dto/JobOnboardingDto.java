@@ -1,5 +1,6 @@
 package com.reborn.server.domain.user.dto;
 
+import com.reborn.server.domain.license.dto.request.LicenseRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,5 +14,5 @@ import java.util.List;
 public class JobOnboardingDto {
     private String sex;
     private int year;
-    private List<CertificateDto> certificate;
+    private List<LicenseRequestDto> licenses;
 }
