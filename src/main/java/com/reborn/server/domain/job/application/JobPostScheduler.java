@@ -21,7 +21,7 @@ public class JobPostScheduler {
     @Value("${openApi.service-key}")
     private String serviceKey;
 
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정
+    //@Scheduled(cron = "0 0 0 * * ?") // 매일 자정
     public void updateJobPosts() throws Exception {
         jobPostService.syncJobData(restTemplate, baseUrl, serviceKey);
         jobPostService.deleteExpiredJobPosts();
