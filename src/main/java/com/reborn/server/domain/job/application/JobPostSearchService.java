@@ -2,7 +2,7 @@ package com.reborn.server.domain.job.application;
 
 import com.reborn.server.domain.job.dao.JobPostDetailRepository;
 import com.reborn.server.domain.job.domain.JobPostDetail;
-import com.reborn.server.domain.job.dto.JobPostSearchDto;
+import com.reborn.server.domain.job.dto.response.JobResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class JobPostSearchService {
     private final JobPostDetailRepository jobPostDetailRepository;
 
-    public List<JobPostSearchDto> searchJobPosts(String keyword) {
+    public List<JobResponseDto> searchJobPosts(String keyword) {
         // keyword가 null이거나 비어있으면 빈 리스트 반환
         if (keyword == null || keyword.isEmpty()) {
             return List.of();
@@ -42,8 +42,7 @@ public class JobPostSearchService {
                 .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue())) // 점수에 따라 정렬
                 .map(entry -> {
                     JobPostDetail jobPost = entry.getKey();
-                    return JobPostSearchDto.builder()
-                            .jobId(jobPost.getJobId())
+                    return JobResponseDto.builder()
                             .jobTitle(jobPost.getJobTitle())
                             .companyName(jobPost.getCompanyName())
                             .workAddr(jobPost.getWorkAddr())

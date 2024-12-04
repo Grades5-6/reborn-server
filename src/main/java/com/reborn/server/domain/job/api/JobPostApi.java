@@ -2,7 +2,6 @@ package com.reborn.server.domain.job.api;
 
 import com.reborn.server.domain.job.application.JobPostSearchService;
 import com.reborn.server.domain.job.application.JobPostService;
-import com.reborn.server.domain.job.dto.JobPostSearchDto;
 import com.reborn.server.domain.job.dto.response.JobResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,8 +37,8 @@ public class JobPostApi {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<JobPostSearchDto>> searchJobPosts(@RequestParam String keyword) {
-        List<JobPostSearchDto> searchResults = jobPostSearchService.searchJobPosts(keyword);
+    public ResponseEntity<List<JobResponseDto>> searchJobPosts(@RequestParam String keyword) {
+        List<JobResponseDto> searchResults = jobPostSearchService.searchJobPosts(keyword);
         return ResponseEntity.ok(searchResults);
     }
 
