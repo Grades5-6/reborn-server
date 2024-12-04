@@ -11,6 +11,8 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "user")
 public class User {
@@ -56,22 +58,10 @@ public class User {
     @Column(name = "year")
     private Integer year; // 태어난 연도
 
+    // To Do: fix ManyToMany
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private List<License> licenses = new ArrayList<>();
-
-    @Builder
-    public User(String name, String email, OauthProvider oauthProvider, String introduce, String profileImg, String rebornTemperature, String employmentStatus, String region, List<String> interestedField) {
-        this.name = name;
-        this.email = email;
-        this.oauthProvider = oauthProvider;
-        this.introduce = introduce;
-        this.profileImg = profileImg;
-        this.rebornTemperature = rebornTemperature;
-        this.employmentStatus = employmentStatus;
-        this.region = region;
-        this.interestedField = interestedField;
-    }
 
     public static User of(String name, String email, OauthProvider oauthProvider, String profileImg) {
         return User.builder()

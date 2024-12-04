@@ -22,11 +22,11 @@ public class LicenseScheduler {
     public void fetchLicenseData() {
         List<LicenseResponseDto> licenseResponseDtos = licenseApiClient.fetchLicenses();
 
-        Set<String> existingJmcds = licenseRepository.findAllJmcds();
+        Set<String> existingJmfldnm = licenseRepository.findAllJmfldnm();
 
         List<License> licenses = licenseResponseDtos.stream()
                 .map(LicenseResponseDto::toEntity)
-                .filter(license -> !existingJmcds.contains(license.getJmcd())) // 중복 제거
+                .filter(license -> !existingJmfldnm.contains(license.getJmfldnm()))
                 .collect(Collectors.toList());
         licenseRepository.saveAll(licenses);
     }
