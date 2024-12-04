@@ -39,7 +39,7 @@ public class User {
     private String profileImg;
 
     @Column(name = "reborn_temperature")
-    private String rebornTemperature; // 리본 온도
+    private Integer rebornTemperature; // 리본 온도
 
     @Column(name = "employment_status")
     private String employmentStatus; // "재직" or "퇴직"

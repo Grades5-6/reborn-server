@@ -30,9 +30,6 @@ public class JobPostSearchService {
                     if (jobPost.getJobTitle().contains(keyword)) {
                         score += 10; // 제목에 포함
                     }
-                    if (jobPost.getDetailCont().contains(keyword)) {
-                        score += 5; // 세부 내용에 포함
-                    }
                     if (jobPost.getCompanyName().contains(keyword)) {
                         score += 3; // 회사 이름에 포함
                     }

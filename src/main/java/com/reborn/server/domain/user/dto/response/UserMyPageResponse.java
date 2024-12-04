@@ -14,7 +14,7 @@ import java.util.List;
 public class UserMyPageResponse {
     private String nickName;
     private String profileImg;
-    private String rebornTemperature;
+    private Integer rebornTemperature;
     private String employmentStatus;
     private String region;
     private List<String> interestedField;
