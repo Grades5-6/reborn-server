@@ -2,6 +2,8 @@ package com.reborn.server.domain.user.domain;
 
 import com.reborn.server.domain.auth.domain.oauth.OauthProvider;
 import com.reborn.server.domain.license.domain.License;
+import com.reborn.server.domain.license.dto.response.LicenseResponseDto;
+import com.reborn.server.domain.user.dto.request.UserLicensesRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -96,6 +98,11 @@ public class User {
     public void updateJobOnboardingData(String sex, int year, List<License> licenses) {
         this.sex= sex;
         this.year=year;
+        this.licenses.clear();
+        this.licenses.addAll(licenses);
+    }
+
+    public void updateUserLicenses(List<License> licenses) {
         this.licenses.clear();
         this.licenses.addAll(licenses);
     }

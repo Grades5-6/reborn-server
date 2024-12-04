@@ -2,6 +2,7 @@ package com.reborn.server.domain.user.api;
 
 import com.reborn.server.domain.user.application.MypageService;
 import com.reborn.server.domain.user.dto.request.UserInterestsUpdateRequest;
+import com.reborn.server.domain.user.dto.request.UserLicensesRequest;
 import com.reborn.server.domain.user.dto.request.UserProfileUpdateRequest;
 import com.reborn.server.domain.user.dto.request.UserRegionUpdateRequest;
 import com.reborn.server.domain.user.dto.response.UserMyPageResponse;
@@ -76,5 +77,18 @@ public class MypageApi {
             return ResponseEntity.internalServerError().build();
         }
     }
-    
+
+    // 동네 수정
+    @PatchMapping("/licenses")
+    public ResponseEntity<String> updateUserLicenses(@RequestBody UserLicensesRequest licences) {
+        try {
+            mypageService.updateUserLicenses(licences);
+            return ResponseEntity.ok("나의 자격증 정보가 수정되었습니다.");
+
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

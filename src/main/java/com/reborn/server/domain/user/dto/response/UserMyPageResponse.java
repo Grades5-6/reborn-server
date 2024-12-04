@@ -1,5 +1,7 @@
 package com.reborn.server.domain.user.dto.response;
 
+import com.reborn.server.domain.license.domain.License;
+import com.reborn.server.domain.license.dto.response.LicenseResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,4 +20,5 @@ public class UserMyPageResponse {
     private String employmentStatus;
     private String region;
     private List<String> interestedField;
+    private List<LicenseResponseDto> licenses;
 }
