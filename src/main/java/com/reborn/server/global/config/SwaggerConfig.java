@@ -6,11 +6,14 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 
-    @OpenAPIDefinition(
+
+@OpenAPIDefinition(
             info = @Info(
                     title = "API 명세서",
                     description = "reborn 프로젝트의 API 명세서",
@@ -31,9 +34,15 @@ import org.springframework.context.annotation.Configuration;
                             .name(jwtSchemeName)
                             .type(SecurityScheme.Type.HTTP)
                             .scheme(BEARER_TOKEN_PREFIX));
+
+            Server httpsServer = new Server();
+            httpsServer.setUrl("https://re-born.asia");
+            httpsServer.setDescription("reborn https server url");
+
             return new OpenAPI()
                     .addSecurityItem(securityRequirement)
-                    .components(components);
+                    .components(components)
+                    .servers(List.of(httpsServer));
         }
 
     }
