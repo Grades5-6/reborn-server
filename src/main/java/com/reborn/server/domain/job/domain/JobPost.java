@@ -18,7 +18,7 @@ public class JobPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String jobId; // 직업공고 id
-    private String jobName; // 공고 제목
+    private String jobTitle; // 공고 제목
     private String companyName; // 회사 이름
     private String workLocation; // 위치
     private String status; // 공고 상태 (접수중/마감)
@@ -26,9 +26,9 @@ public class JobPost {
     private String end; // 접수 마감 일자
 
     @Builder
-    public JobPost(String jobId, String jobName, String companyName, String workLocation, String status, String start, String end) {
+    public JobPost(String jobId, String jobTitle, String companyName, String workLocation, String status, String start, String end) {
         this.jobId = jobId;
-        this.jobName = jobName;
+        this.jobTitle = jobTitle;
         this.companyName = companyName;
         this.workLocation = workLocation;
         this.status = status;
@@ -39,7 +39,7 @@ public class JobPost {
     @Builder
     public JobPost(JobPostDto jobPostDto) {
         this.jobId = jobPostDto.getJobId();
-        this.jobName = jobPostDto.getJobName();
+        this.jobTitle = jobPostDto.getJobTitle();
         this.companyName = jobPostDto.getCompanyName();
         this.workLocation = jobPostDto.getWorkLocation();
         this.status = jobPostDto.getStatus();
