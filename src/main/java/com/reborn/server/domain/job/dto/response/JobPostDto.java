@@ -1,4 +1,4 @@
-package com.reborn.server.domain.job.dto;
+package com.reborn.server.domain.job.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

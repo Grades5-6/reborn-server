@@ -1,6 +1,6 @@
 package com.reborn.server.domain.job.domain;
 
-import com.reborn.server.domain.job.dto.JobPostDto;
+import com.reborn.server.domain.job.dto.response.JobPostDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
