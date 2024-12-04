@@ -1,10 +1,7 @@
 package com.reborn.server.domain.job.application;
 
-import com.reborn.server.domain.job.dao.JobPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,10 +18,17 @@ public class JobPostScheduler {
     @Value("${openApi.service-key}")
     private String serviceKey;
 
+    @Value("${openApi.detail-url}")
+    private String detailUrl;
+
+
     //@Scheduled(cron = "0 0 0 * * ?") // 매일 자정
     public void updateJobPosts() throws Exception {
-        jobPostService.syncJobData(restTemplate, baseUrl, serviceKey);
+        jobPostService.callJobData(restTemplate, baseUrl, serviceKey);
         jobPostService.deleteExpiredJobPosts();
+        jobPostService.saveJobDetail(restTemplate, serviceKey, detailUrl);
+
+
     }
 
 }
