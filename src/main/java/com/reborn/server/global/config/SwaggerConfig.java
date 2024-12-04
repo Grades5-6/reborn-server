@@ -39,10 +39,14 @@ import java.util.List;
             httpsServer.setUrl("https://re-born.asia");
             httpsServer.setDescription("reborn https server url");
 
+            Server localServer = new Server();
+            httpsServer.setUrl("http://localhost:8080");
+            httpsServer.setDescription("reborn local server url");
+
             return new OpenAPI()
                     .addSecurityItem(securityRequirement)
                     .components(components)
-                    .servers(List.of(httpsServer));
+                    .servers(List.of(httpsServer,localServer));
         }
 
     }
