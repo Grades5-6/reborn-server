@@ -1,14 +1,11 @@
 package com.reborn.server.domain.job.api;
 
-import com.reborn.server.domain.job.application.JobPostDetailService;
 import com.reborn.server.domain.job.application.JobPostSearchService;
 import com.reborn.server.domain.job.application.JobPostService;
-import com.reborn.server.domain.job.dto.JobPostDetailDto;
 import com.reborn.server.domain.job.dto.JobPostSearchDto;
+import com.reborn.server.domain.job.dto.response.JobResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,11 +30,10 @@ public class JobPostApi {
 
     private final JobPostService jobPostService;
     private final JobPostSearchService jobPostSearchService;
-    private final JobPostDetailService jobPostDetailService;
 
     @GetMapping
-    public ResponseEntity<List<JobPostDetailDto>> getAllJobPost() {
-        List<JobPostDetailDto> jobPostDetail = jobPostService.getAllJobPosts();
+    public ResponseEntity<List<JobResponseDto>> getAllJobPost() {
+        List<JobResponseDto> jobPostDetail = jobPostService.getAllJobDetails();
         return ResponseEntity.ok(jobPostDetail);
     }
 
@@ -47,9 +43,4 @@ public class JobPostApi {
         return ResponseEntity.ok(searchResults);
     }
 
-    @GetMapping("/detail")
-    public ResponseEntity<JobPostDetailDto> getJobPostDetail(@RequestParam String jobId) throws Exception {
-        JobPostDetailDto jobPostDetail = jobPostDetailService.getJobPostDetail(restTemplate, detailUrl, serviceKey, jobId);
-        return new ResponseEntity<>(jobPostDetail, HttpStatus.OK);
-    }
 }

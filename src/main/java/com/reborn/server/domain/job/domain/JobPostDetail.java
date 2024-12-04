@@ -1,6 +1,6 @@
 package com.reborn.server.domain.job.domain;
 
-import com.reborn.server.domain.job.dto.JobPostDetailDto;
+import com.reborn.server.domain.job.dto.response.JobPostDetailDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "job")
+@Table(name = "job_detail")
 public class JobPostDetail {
 
     // api 받아오면 수정할 예정
@@ -48,4 +48,18 @@ public class JobPostDetail {
     }
 
 
+    public JobPostDetail(String jobId, JobPostDetailDto jobDetailDto) {
+        this.jobId = jobId;
+        this.age = jobDetailDto.getAge();
+        this.ageLim = jobDetailDto.getAgeLim();
+        this.jobTitle = jobDetailDto.getJobTitle();
+        this.detailCont = jobDetailDto.getDetailCont();
+        this.clerkphone = jobDetailDto.getClerkphone();
+        this.companyName = jobDetailDto.getCompanyName();
+        this.hmUrl = jobDetailDto.getHmUrl();
+        this.workAddr = jobDetailDto.getWorkAddr();
+        this.status = jobDetailDto.getStatus();
+        this.start = jobDetailDto.getStart();
+        this.end = jobDetailDto.getEnd();
+    }
 }
