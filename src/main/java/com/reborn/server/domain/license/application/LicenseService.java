@@ -32,6 +32,7 @@ public class LicenseService {
         return LicenseResponseDto.builder()
                 .jmfldnm(license.getJmfldnm())
                 .seriesnm(license.getSeriesnm())
+                .expirationDate(license.getExpirationDate())
                 .build();
     }
 }

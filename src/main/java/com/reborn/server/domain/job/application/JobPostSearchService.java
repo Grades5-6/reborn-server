@@ -85,7 +85,7 @@ public class JobPostSearchService {
 
         return jobPosts.stream()
                 .map(jobPost -> new AbstractMap.SimpleEntry<>(jobPost, scoreCalculator.apply(jobPost)))
-                .filter(entry -> entry.getValue() > 7) // 점수가 0보다 큰 경우만 필터링
+                .filter(entry -> entry.getValue() > 3) // 점수가 0보다 큰 경우만 필터링
                 .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue())) // 점수에 따라 정렬
                 .map(entry -> {
                     JobPostDetail jobPost = entry.getKey();

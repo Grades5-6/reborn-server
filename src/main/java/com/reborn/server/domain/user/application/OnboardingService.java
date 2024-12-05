@@ -1,6 +1,7 @@
 package com.reborn.server.domain.user.application;
 
 import com.reborn.server.domain.license.application.LicenseService;
+import com.reborn.server.domain.license.dao.LicenseRepository;
 import com.reborn.server.domain.license.domain.License;
 import com.reborn.server.domain.user.dao.UserRepository;
 import com.reborn.server.domain.user.domain.User;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OnboardingService {
     private final UserRepository userRepository;
-    private final LicenseService licenseService;
+    private final LicenseRepository licenseRepository;
 
     public void saveMainOnboardingData(MainOnboardingDto mainOnboardingDto) {
         String userName = "김영숙";
@@ -31,12 +32,18 @@ public class OnboardingService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with name: " + userName));
 
         List<License> licenses = jobOnboardingDto.getLicenses().stream()
-                .map(licenseDto -> licenseService.findLicenseByJmfldnm(licenseDto.getJmfldnm())
+                .map(licenseDto -> {
+                            License license = licenseRepository.findByJmfldnm(licenseDto.getJmfldnm())
+                                .orElseThrow(() -> new IllegalArgumentException("License not found: " + licenseDto.getJmfldnm()));
+                            license.setExpirationDate(licenseDto.getExpirationDate());
+                            System.out.println(licenseDto.getExpirationDate());
+                            System.out.println(license.getExpirationDate());
+                            return licenseRepository.save(license); // 저장 후 반환
+                        }
                 )
                 .toList();
 
-        user.getLicenses().addAll(licenses);
-        user.updateJobOnboardingData(jobOnboardingDto.getSex(), jobOnboardingDto.getYear() , licenses);
+        user.updateJobOnboardingData(jobOnboardingDto.getSex(), jobOnboardingDto.getYear(), licenses);
         userRepository.save(user);
     }
 }

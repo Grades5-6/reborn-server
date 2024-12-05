@@ -8,6 +8,8 @@ import com.reborn.server.domain.job.domain.JobPostDetail;
 import com.reborn.server.domain.job.dto.response.JobPostDetailDto;
 import com.reborn.server.domain.job.dto.response.JobPostDto;
 import com.reborn.server.domain.job.dto.response.JobResponseDto;
+import com.reborn.server.domain.user.dao.UserRepository;
+import com.reborn.server.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +43,10 @@ public class JobPostService {
 
     private final JobPostRepository jobPostRepository;
     private final JobPostDetailRepository jobPostDetailRepository;
+    private final String userName = "김영숙";
 
     private static final Logger logger = LoggerFactory.getLogger(JobPostApi.class);
+    private final UserRepository userRepository;
 
     // saveAll
     public void saveJobPosts(List<JobPostDto> jobPostDtos) {
@@ -239,15 +243,19 @@ public class JobPostService {
     // 직업 상세 정보 db에 저장
     public void saveJobDetail(RestTemplate restTemplate, String serviceKey, String detailUrl) {
         List<JobPost> jobList = jobPostRepository.findAll();
-        List<JobPostDetail> jobDetailsToSave = jobList.stream().map(jobPost -> {
-            try {
-                JobPostDetailDto jobDetailDto = getJobPostDetail(restTemplate, detailUrl, serviceKey, jobPost.getJobId());
-                return new JobPostDetail(jobPost.getJobId(), jobDetailDto);
-            } catch (Exception e) {
-                logger.error("Failed to fetch details for jobId");
-                return null;
-            }
-        }).filter(Objects::nonNull)
+        List<JobPostDetail> jobDetailsToSave = jobList.stream()
+                .map(jobPost -> {
+                    try {
+                        if(!jobPostDetailRepository.existsByJobId(jobPost.getJobId())) {
+                            JobPostDetailDto jobDetailDto = getJobPostDetail(restTemplate, detailUrl, serviceKey, jobPost.getJobId());
+                            return new JobPostDetail(jobPost.getJobId(), jobDetailDto);
+                        } else return null;
+                    } catch (Exception e) {
+                        logger.error("Failed to fetch details for jobId");
+                        return null;
+                    }
+                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         if (!jobDetailsToSave.isEmpty()) {
@@ -259,8 +267,12 @@ public class JobPostService {
     }
 
     public List<JobResponseDto> getAllJobDetails(){
+        User user = userRepository.findByName(userName).orElseThrow();
+
         List<JobPostDetail> jobPostDetails = jobPostDetailRepository.findAll();
-        return  jobPostDetails.stream().map(jobPostDetail -> JobResponseDto.builder()
+        return  jobPostDetails.stream()
+                .filter(jobPostDetail -> jobPostDetail.getWorkAddr().contains(user.getRegion()))
+                .map(jobPostDetail -> JobResponseDto.builder()
                 .workAddr(jobPostDetail.getWorkAddr())
                 .jobTitle(jobPostDetail.getJobTitle())
                 .hmUrl(jobPostDetail.getHmUrl())

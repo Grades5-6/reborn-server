@@ -1,9 +1,11 @@
 package com.reborn.server.domain.license.dto.request;
 
-import com.reborn.server.domain.license.domain.License;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
@@ -11,11 +13,6 @@ import lombok.Getter;
 public class LicenseRequestDto {
     private String jmfldnm;
     private String seriesnm;
-
-    public License toEntity() {
-        return License.builder()
-                .jmfldnm(this.jmfldnm)
-                .seriesnm(this.seriesnm)
-                .build();
-    }
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate expirationDate;
 }
