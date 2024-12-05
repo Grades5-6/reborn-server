@@ -44,8 +44,8 @@ public class JobPostApi {
     }
 
     @GetMapping("/licenses")
-    public ResponseEntity<List<JobResponseDto>> getJobPostByLicenses() {
-        List<JobResponseDto> searchResults = jobPostSearchService.getJobPostsByLicenses();
+    public ResponseEntity<List<JobResponseDto>> getJobPostByLicenses(@RequestParam String jmfldnm) {
+        List<JobResponseDto> searchResults = jobPostSearchService.getJobPostsByLicenses(jmfldnm);
         return ResponseEntity.ok(searchResults);
     }
 }

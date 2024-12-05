@@ -44,32 +44,22 @@ public class JobPostSearchService {
         });
     }
 
-    public List<JobResponseDto> getJobPostsByLicenses() {
+    public List<JobResponseDto> getJobPostsByLicenses(String jmfldnm) {
         User user = userRepository.findByName(userName).orElseThrow();
-        List<License> licenses = user.getLicenses();
-        List<String> jmfldnms = licenses.stream()
-                .map(License::getJmfldnm)
-                .toList();
         String region = user.getRegion();
-
-        if (jmfldnms.isEmpty()) {
-            return List.of();
-        }
 
         return calculateScoreAndFilter(jobPost -> {
             int score = 0;
-            for (String keyword : jmfldnms) {
                 if(jobPost.getWorkAddr().contains(region)) {
-                    for (char ch : keyword.substring(0, keyword.length() - 2).toCharArray()) {
+                    for (char ch : jmfldnm.substring(0, jmfldnm.length() - 2).toCharArray()) {
                         String character = String.valueOf(ch);
                         if (jobPost.getJobTitle().contains(character)) {
-                            score += 2;
+                            score += 5;
                         }
                         if (jobPost.getCompanyName().contains(character)) {
-                            score += 1;
+                            score += 3;
                         }
                     }
-                }
             }
             return score;
         });
@@ -85,7 +75,7 @@ public class JobPostSearchService {
 
         return jobPosts.stream()
                 .map(jobPost -> new AbstractMap.SimpleEntry<>(jobPost, scoreCalculator.apply(jobPost)))
-                .filter(entry -> entry.getValue() > 3) // 점수가 0보다 큰 경우만 필터링
+                .filter(entry -> entry.getValue() >= 10) // 점수가 0보다 큰 경우만 필터링
                 .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue())) // 점수에 따라 정렬
                 .map(entry -> {
                     JobPostDetail jobPost = entry.getKey();
