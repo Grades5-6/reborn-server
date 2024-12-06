@@ -61,7 +61,7 @@ public class User {
     private Integer year; // 태어난 연도
 
     // To Do: fix ManyToMany
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<License> licenses = new ArrayList<>();
 
