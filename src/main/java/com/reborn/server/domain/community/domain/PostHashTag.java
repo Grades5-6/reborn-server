@@ -19,8 +19,11 @@ public class PostHashTag {
     private CommunityPost post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hashTag_id")
-    private HashTag hashTag;
+    @JoinColumn(name = "interestTag_id")
+    private InterestTag interestTag;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoryTag_id")
+    private CategoryTag categoryTag;
 
 }
