@@ -39,7 +39,6 @@ public class CommunityService {
                 .content(communityPostRequest.getContent())
                 .region(communityPostRequest.getRegion())
                 .postImage(communityPostRequest.getPostImage())
-                .createdAt(LocalDateTime.now())
                 .build();
 
         CommunityPost savedPost = communityPostRepository.save(post);

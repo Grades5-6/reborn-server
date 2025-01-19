@@ -26,7 +26,6 @@ public class CommunityPost {
     @Column(name = "post_image")
     private String postImage;
 
-    @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -37,12 +36,18 @@ public class CommunityPost {
     private int commentsCount = 0;
 
     @Builder
-    public CommunityPost(String author, String title, String content, String region, String postImage, LocalDateTime createdAt) {
-        this.author = author;
-        this.title = title;
-        this.content = content;
-        this.region = region;
-        this.postImage = postImage;
-        this.createdAt = createdAt;
+    public static CommunityPost of (String author, String title, String content, String region, String postImage) {
+        return CommunityPost.builder()
+                .author(author)
+                .title(title)
+                .content(content)
+                .region(region)
+                .postImage(postImage)
+                .build();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 }
