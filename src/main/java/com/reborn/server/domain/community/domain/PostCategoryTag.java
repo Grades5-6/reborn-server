@@ -18,6 +18,7 @@ public class PostCategoryTag {
     @JoinColumn(name = "post_id")
     private CommunityPost post;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "categoryTag_id")
     private CategoryTag categoryTag;
 
