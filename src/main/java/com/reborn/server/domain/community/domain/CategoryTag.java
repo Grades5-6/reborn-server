@@ -1,30 +1,19 @@
 package com.reborn.server.domain.community.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CategoryTag implements HashTag{
+public enum CategoryTag {
+    INFORMATION("정보공유"),
+    ANNOUNCEMENT("공고"),
+    COUNSELING("고민상담"),
+    CLUB("소모임"),
+    REVIEW("후기");
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final String name;
 
-    private String name;
-
-    public CategoryTag(String name) {
+    CategoryTag(String name) {
         this.name = name;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
 }

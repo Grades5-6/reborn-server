@@ -1,30 +1,23 @@
 package com.reborn.server.domain.community.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class InterestTag implements HashTag {
+public enum InterestTag {
+    STORE_MANAGEMENT("매장관리"),
+    EDUCATION("교육"),
+    COUNSELING("상담"),
+    AGRICULTURE("농업"),
+    IT("IT"),
+    PARCEL_SERVICE("택배"),
+    SERVICE("서비스"),
+    MEDIA("미디어"),
+    WHITE_COLLAR("사무직");
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final String name;
 
-    private String name;
-
-    public InterestTag(String name) {
+    InterestTag(String name) {
         this.name = name;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostHashTag {
+public class PostInterestTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,12 +18,12 @@ public class PostHashTag {
     @JoinColumn(name = "post_id")
     private CommunityPost post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "interestTag_id")
+    @Column(name = "interestTag_id")
     private InterestTag interestTag;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryTag_id")
-    private CategoryTag categoryTag;
+    public PostInterestTag(CommunityPost post, InterestTag interestTag) {
+        this.post = post;
+        this.interestTag = interestTag;
+    }
 
 }
