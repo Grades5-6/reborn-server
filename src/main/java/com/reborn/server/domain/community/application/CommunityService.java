@@ -1,7 +1,6 @@
 package com.reborn.server.domain.community.application;
 
 import com.reborn.server.domain.community.dao.CommunityPostRepository;
-import com.reborn.server.domain.community.dao.HashTagRepository;
 import com.reborn.server.domain.community.dao.PostHashTagRepository;
 import com.reborn.server.domain.community.domain.CommunityPost;
 import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
@@ -13,14 +12,11 @@ import java.util.List;
 @Service
 public class CommunityService {
     private final CommunityPostRepository communityPostRepository;
-    private final HashTagRepository hashTagRepository;
     private final PostHashTagRepository postHashTagRepository;
 
     public CommunityService(CommunityPostRepository communityPostRepository,
-                            HashTagRepository hashTagRepository,
                             PostHashTagRepository postHashTagRepository) {
         this.communityPostRepository = communityPostRepository;
-        this.hashTagRepository = hashTagRepository;
         this.postHashTagRepository = postHashTagRepository;
     }
 
