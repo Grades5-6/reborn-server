@@ -1,5 +1,7 @@
 package com.reborn.server.domain.community.dto.request;
 
+import com.reborn.server.domain.community.domain.CategoryTag;
+import com.reborn.server.domain.community.domain.InterestTag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,10 +12,11 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class CommunityPostRequest {
-    private String author;
+    private Long authorId; // 사용자 ID
     private String title;
     private String content;
     private String region;
     private String postImage;
-    private List<String> tags; // 해시태그 목록
+    private List<InterestTag> interestTags;
+    private List<CategoryTag> categoryTag;
 }
