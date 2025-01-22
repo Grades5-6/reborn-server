@@ -25,10 +25,10 @@ public class CommunityApi {
     }
 
     @PostMapping("/posts")
-    public ResponseEntity<CommunityPost> createPosts(@RequestBody CommunityPostRequest communityPostRequest) {
+    public ResponseEntity<Void> createPosts(@RequestBody CommunityPostRequest communityPostRequest) {
         try {
-            CommunityPost newPost = communityService.createPosts(communityPostRequest);
-            return ResponseEntity.ok(newPost);
+            communityService.createPosts(communityPostRequest);
+            return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException e){

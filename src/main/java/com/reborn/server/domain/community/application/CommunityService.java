@@ -37,7 +37,7 @@ public class CommunityService {
     }
 
     @Transactional
-    public CommunityPost createPosts(CommunityPostRequest communityPostRequest) {
+    public void createPosts(CommunityPostRequest communityPostRequest) {
         // 사용자 ID로 사용자 조회
         User author = userRepository.findById(communityPostRequest.getAuthorId())
                 .orElseThrow(() -> new EntityNotFoundException("User Not Found"));
@@ -60,8 +60,6 @@ public class CommunityService {
                 postCategoryTagRepository.save(postCategoryTag);
             }
         }
-
-        return post; // 생성된 게시글 반환
     }
 
     @Transactional
