@@ -3,6 +3,7 @@ package com.reborn.server.domain.community.api;
 import com.reborn.server.domain.community.application.CommunityService;
 import com.reborn.server.domain.community.domain.CommunityPost;
 import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
+import com.reborn.server.domain.community.dto.response.CommunityPostResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +37,9 @@ public class CommunityApi {
     }
 
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<CommunityPost> getPosts(@PathVariable Long postId) {
+    public ResponseEntity<CommunityPostResponse> getPosts(@PathVariable Long postId) {
         try {
-            CommunityPost newPost = communityService.getPosts(postId);
+            CommunityPostResponse newPost = communityService.getPosts(postId);
             return ResponseEntity.ok(newPost);
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();

@@ -5,6 +5,7 @@ import com.reborn.server.domain.community.dao.PostCategoryTagRepository;
 import com.reborn.server.domain.community.dao.PostInterestTagRepository;
 import com.reborn.server.domain.community.domain.*;
 import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
+import com.reborn.server.domain.community.dto.response.CommunityPostResponse;
 import com.reborn.server.domain.user.dao.UserRepository;
 import com.reborn.server.domain.user.domain.User;
 import jakarta.persistence.EntityNotFoundException;
@@ -64,8 +65,38 @@ public class CommunityService {
     }
 
     @Transactional
-    public CommunityPost getPosts(Long postId) {
-        return null;
+    public CommunityPostResponse getPosts(Long postId) {
+        CommunityPost post = communityPostRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post Not Found"));
+
+        User author = post.getAuthor();
+
+        List<InterestTag> interestTagList = postInterestTagRepository.findInterestTagsByPostId(postId);
+        List<String> interestTagNameList = interestTagList.stream()
+                .map(InterestTag::getName)
+                .toList();
+
+        List<CategoryTag> categoryTagList = postCategoryTagRepository.findCategoryTagsByPostId(postId);
+        List<String> categoryTagNameList = categoryTagList.stream()
+                .map(CategoryTag::getName)
+                .toList();
+
+        return CommunityPostResponse.builder()
+                .authorId(author.getId())
+                .authorNickName(author.getNickName())
+                .authorProfileImg(author.getProfileImg())
+                .authorInterestTag(author.getInterestedField())
+                .employmentStatus(author.getEmploymentStatus())
+                .rebornTemperature(author.getRebornTemperature())
+                .title(post.getTitle())
+                .region(post.getRegion())
+                .postImage(post.getPostImage())
+                .likesCount(post.getLikesCount())
+                .commentsCount(post.getCommentsCount())
+                .createdAt(post.getCreatedAt())
+                .interestTags(interestTagNameList)
+                .categoryTag(categoryTagNameList)
+                .build();
     }
 
     @Transactional
