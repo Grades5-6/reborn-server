@@ -18,9 +18,10 @@ public class CommunityPostResponse {
     private Long authorId;
     private String authorNickName;
     private String authorProfileImg;
+    private String authorRegion;
     private List<String> authorInterestTag;
-    private String employmentStatus;
-    private Integer rebornTemperature;
+    private String authorEmploymentStatus;
+    private Integer authorRebornTemperature;
 
     //post
     private String title;
