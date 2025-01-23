@@ -17,6 +17,7 @@ import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -185,6 +186,7 @@ public class JobPostService {
             }
         }
 
+    @Transactional
     // 마감 기한 안 지난 공고 필터링
     public void deleteExpiredJobPosts() {
         LocalDate today = LocalDate.now();
