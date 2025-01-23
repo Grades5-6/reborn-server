@@ -4,6 +4,7 @@ import com.reborn.server.domain.auth.application.OauthLoginService;
 import com.reborn.server.domain.auth.dto.Tokens;
 import com.reborn.server.domain.auth.dto.response.TokenResponse;
 import com.reborn.server.domain.auth.infra.kakao.KakaoLoginParams;
+import com.reborn.server.domain.auth.infra.naver.NaverLoginParams;
 import com.reborn.server.domain.auth.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,14 @@ public class AuthApi {
     public ResponseEntity<?> loginKakao(@RequestBody KakaoLoginParams params, HttpServletResponse response) {
         Tokens tokens = oauthLoginService.login(params);
         System.out.println("loginKakao finished");
+        TokenResponse tokenResponseDto = JwtUtil.setJwtResponse(response, tokens);
+        return ResponseEntity.ok(tokenResponseDto);
+    }
+
+    @PostMapping("/naver")
+    public ResponseEntity<?> loginNaver(@RequestBody NaverLoginParams params, HttpServletResponse response){
+        Tokens tokens = oauthLoginService.login(params);
+        System.out.println("loginNaver finished");
         TokenResponse tokenResponseDto = JwtUtil.setJwtResponse(response, tokens);
         return ResponseEntity.ok(tokenResponseDto);
     }
