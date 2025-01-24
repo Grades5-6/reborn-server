@@ -21,6 +21,15 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional
+    public CommentResponse getComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()-> new EntityNotFoundException("no Comment id with " + commentId));
+
+        return CommentResponse.of(comment);
+    }
+
+
+    @Transactional
     // 댓글 작성
     public CommentResponse createComment(Long userId, Long postId, Long parentId, String text) {
         // 사용자 조회
@@ -46,7 +55,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException("no Comment id with "+commentId));
 
-        comment.setText(text);
+        comment.setText(text); // 내용 수정 및 수정된 시간 반영
         commentRepository.save(comment);
 
         return CommentResponse.of(comment);
@@ -59,7 +68,10 @@ public class CommentService {
         }
 
 
-    }
+
+
+
+}
 
 
 
