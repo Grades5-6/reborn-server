@@ -73,4 +73,11 @@ public class CommunityPost {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    public void updatePost (String title, String content, String region, String postImage) {
+        this.title = title;
+        this.content = content;
+        this.region = region;
+        this.postImage = postImage;
+    }
 }

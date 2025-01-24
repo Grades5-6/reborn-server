@@ -11,8 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-public class CommunityPostRequest {
-    private Long authorId; // 사용자 ID
+public class CommunityPostUpdateRequest {
     private String title;
     private String content;
     private String region;

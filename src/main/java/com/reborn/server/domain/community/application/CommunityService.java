@@ -5,6 +5,7 @@ import com.reborn.server.domain.community.dao.PostCategoryTagRepository;
 import com.reborn.server.domain.community.dao.PostInterestTagRepository;
 import com.reborn.server.domain.community.domain.*;
 import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
+import com.reborn.server.domain.community.dto.request.CommunityPostUpdateRequest;
 import com.reborn.server.domain.community.dto.response.CommunityPostResponse;
 import com.reborn.server.domain.user.dao.UserRepository;
 import com.reborn.server.domain.user.domain.User;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommunityService {
@@ -54,8 +56,8 @@ public class CommunityService {
             }
         }
 
-        if (communityPostRequest.getCategoryTag() != null) {
-            for (CategoryTag categoryTag : communityPostRequest.getCategoryTag()) {
+        if (communityPostRequest.getCategoryTags() != null) {
+            for (CategoryTag categoryTag : communityPostRequest.getCategoryTags()) {
                 PostCategoryTag postCategoryTag = PostCategoryTag.of(post, categoryTag);
                 postCategoryTagRepository.save(postCategoryTag);
             }
@@ -79,27 +81,82 @@ public class CommunityService {
                 .map(CategoryTag::getName)
                 .toList();
 
-        return CommunityPostResponse.builder()
-                .authorId(author.getId())
-                .authorNickName(author.getNickName())
-                .authorProfileImg(author.getProfileImg())
-                .authorRegion(author.getRegion())
-                .authorInterestTag(author.getInterestedField())
-                .authorEmploymentStatus(author.getEmploymentStatus())
-                .authorRebornTemperature(author.getRebornTemperature())
-                .title(post.getTitle())
-                .region(post.getRegion())
-                .postImage(post.getPostImage())
-                .likesCount(post.getLikesCount())
-                .commentsCount(post.getCommentsCount())
-                .createdAt(post.getCreatedAt())
-                .interestTags(interestTagNameList)
-                .categoryTag(categoryTagNameList)
-                .build();
+        return CommunityPostResponse.from(author, post, interestTagNameList, categoryTagNameList);
     }
+
+    @Transactional
+    public Long updatePosts(Long postId, CommunityPostUpdateRequest communityPostUpdateRequest) {
+
+        if (communityPostUpdateRequest == null) {
+            throw new IllegalArgumentException("CommunityPostUpdateRequest cannot be null");
+        }
+
+        CommunityPost post = communityPostRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post Not Found"));
+
+        post.updatePost(communityPostUpdateRequest.getTitle(),
+                communityPostUpdateRequest.getContent(),
+                communityPostUpdateRequest.getRegion(),
+                communityPostUpdateRequest.getPostImage()
+        );
+
+        CommunityPost updatedPost = communityPostRepository.save(post);
+
+        // 기존에 저장된 태그 리스트 가져오기
+        List<InterestTag> existingInterestTags = postInterestTagRepository.findInterestTagsByPostId(postId);
+        List<CategoryTag> existingCategoryTags = postCategoryTagRepository.findCategoryTagsByPostId(postId);
+
+        // Update InterestTag
+        List<InterestTag> newInterestTags = communityPostUpdateRequest.getInterestTags();
+
+        // 기존 태그 중에서 새로운 태그에 없는 것 삭제
+        for (InterestTag existingTag : existingInterestTags) {
+            if (!newInterestTags.contains(existingTag)) {
+
+                // InterestTag와 postId로 PostInterestTag를 찾기
+                Optional<PostInterestTag> postInterestTagOptional = postInterestTagRepository.findByInterestTagAndPostId(existingTag, postId);
+                // PostInterestTag가 존재하는 경우 삭제
+                postInterestTagOptional.ifPresent(postInterestTagRepository::delete);
+
+            }
+        }
+
+        // 새로운 태그 중에서 기존 태그에 없는 것 추가
+        for (InterestTag newTag : newInterestTags) {
+            if (!existingInterestTags.contains(newTag)) {
+                PostInterestTag postInterestTag = PostInterestTag.of(updatedPost, newTag);
+                postInterestTagRepository.save(postInterestTag);
+            }
+        }
+
+        // Update CategoryTag
+        List<CategoryTag> newCategoryTags = communityPostUpdateRequest.getCategoryTags();
+
+        for (CategoryTag existingTag : existingCategoryTags) {
+            if (!newCategoryTags.contains(existingTag)) {
+
+                // CategoryTag와 postId로 PostCategoryTag를 찾기
+                Optional<PostCategoryTag> postCategoryTagOptional = postCategoryTagRepository.findByCategoryTagAndPostId(existingTag, postId);
+
+                // PostCategoryTag가 존재하는 경우 삭제
+                postCategoryTagOptional.ifPresent(postCategoryTagRepository::delete);
+            }
+        }
+
+        for (CategoryTag newTag : newCategoryTags) {
+            if (!existingCategoryTags.contains(newTag)) {
+                PostCategoryTag postCategoryTag = PostCategoryTag.of(updatedPost, newTag);
+                postCategoryTagRepository.save(postCategoryTag);
+            }
+        }
+
+        return updatedPost.getId();
+    }
+
 
     @Transactional
     public void deletePosts(Long postId) {
 
     }
+
 }
