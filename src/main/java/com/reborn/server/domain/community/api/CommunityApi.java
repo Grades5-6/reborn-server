@@ -26,10 +26,10 @@ public class CommunityApi {
     }
 
     @PostMapping("/posts")
-    public ResponseEntity<Void> createPosts(@RequestBody CommunityPostRequest communityPostRequest) {
+    public ResponseEntity<CommunityPostResponse> createPosts(@RequestBody CommunityPostRequest communityPostRequest) {
         try {
-            communityService.createPosts(communityPostRequest);
-            return ResponseEntity.ok().build();
+            CommunityPostResponse newPost = communityService.createPosts(communityPostRequest);
+            return ResponseEntity.ok(newPost);
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException e){
@@ -50,10 +50,10 @@ public class CommunityApi {
     }
 
     @PutMapping("/posts/{postId}")
-    public ResponseEntity<Long> updatePosts(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequest communityPostUpdateRequest) {
+    public ResponseEntity<CommunityPostResponse> updatePosts(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequest communityPostUpdateRequest) {
         try {
-            Long updatePostId = communityService.updatePosts(postId, communityPostUpdateRequest);
-            return ResponseEntity.ok(updatePostId);
+            CommunityPostResponse updatedPost = communityService.updatePosts(postId, communityPostUpdateRequest);
+            return ResponseEntity.ok(updatedPost);
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException e){

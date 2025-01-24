@@ -39,29 +39,30 @@ public class CommunityService {
     }
 
     @Transactional
-    public void createPosts(CommunityPostRequest communityPostRequest) {
+    public CommunityPostResponse createPosts(CommunityPostRequest communityPostRequest) {
         // 사용자 ID로 사용자 조회
         User author = userRepository.findById(communityPostRequest.getAuthorId())
                 .orElseThrow(() -> new EntityNotFoundException("User Not Found"));
         // 게시글 생성
         CommunityPost post = CommunityPost.from(communityPostRequest, author);
 
-        communityPostRepository.save(post);
+        CommunityPost newPost = communityPostRepository.save(post);
 
         // InterestTag와 CategoryTag 처리
         if (communityPostRequest.getInterestTags() != null) {
             for (InterestTag interestTag : communityPostRequest.getInterestTags()) {
-                PostInterestTag postInterestTag = PostInterestTag.of(post, interestTag);
+                PostInterestTag postInterestTag = PostInterestTag.of(newPost, interestTag);
                 postInterestTagRepository.save(postInterestTag);
             }
         }
 
         if (communityPostRequest.getCategoryTags() != null) {
             for (CategoryTag categoryTag : communityPostRequest.getCategoryTags()) {
-                PostCategoryTag postCategoryTag = PostCategoryTag.of(post, categoryTag);
+                PostCategoryTag postCategoryTag = PostCategoryTag.of(newPost, categoryTag);
                 postCategoryTagRepository.save(postCategoryTag);
             }
         }
+        return getPosts(newPost.getId());
     }
 
     @Transactional
@@ -85,7 +86,7 @@ public class CommunityService {
     }
 
     @Transactional
-    public Long updatePosts(Long postId, CommunityPostUpdateRequest communityPostUpdateRequest) {
+    public CommunityPostResponse updatePosts(Long postId, CommunityPostUpdateRequest communityPostUpdateRequest) {
 
         if (communityPostUpdateRequest == null) {
             throw new IllegalArgumentException("CommunityPostUpdateRequest cannot be null");
@@ -150,7 +151,7 @@ public class CommunityService {
             }
         }
 
-        return updatedPost.getId();
+        return getPosts(updatedPost.getId());
     }
 
 
