@@ -1,6 +1,7 @@
 package com.reborn.server.domain.comment.api;
 
 import com.reborn.server.domain.comment.application.CommentService;
+import com.reborn.server.domain.comment.dto.request.CommentModifyRequest;
 import com.reborn.server.domain.comment.dto.request.CommentRequest;
 import com.reborn.server.domain.comment.dto.response.CommentResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,10 +49,10 @@ public class CommentApi {
     // 댓글 수정
     @PutMapping("/{comment_id}")
     @Operation(summary = "댓글 수정")
-    public ResponseEntity<CommentResponse> modifyComment(@PathVariable Long comment_id, @RequestBody CommentRequest commentRequest){
+    public ResponseEntity<CommentResponse> modifyComment(@PathVariable Long comment_id, @RequestBody CommentModifyRequest commentModifyRequest){
         try{
             CommentResponse commentResponse =
-                    commentService.modifyComment(comment_id, commentRequest.getText());
+                    commentService.modifyComment(comment_id, commentModifyRequest.getText());
             return new ResponseEntity<>(commentResponse, HttpStatus.OK);
         }catch (EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
