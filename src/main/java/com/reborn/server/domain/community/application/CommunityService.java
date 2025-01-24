@@ -154,10 +154,12 @@ public class CommunityService {
         return getPosts(updatedPost.getId());
     }
 
-
     @Transactional
     public void deletePosts(Long postId) {
+        CommunityPost post = communityPostRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post Not Found"));
 
+        post.deletePost();
+        communityPostRepository.save(post);
     }
-
 }

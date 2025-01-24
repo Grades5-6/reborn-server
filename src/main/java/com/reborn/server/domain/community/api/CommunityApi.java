@@ -20,6 +20,7 @@ public class CommunityApi {
         this.communityService = communityService;
     }
 
+    //to-do
     @GetMapping("/posts")
     public List<CommunityPost> getAllPosts() {
         return communityService.getAllPosts();
@@ -72,5 +73,4 @@ public class CommunityApi {
             return ResponseEntity.internalServerError().build();
         }
     }
-
 }

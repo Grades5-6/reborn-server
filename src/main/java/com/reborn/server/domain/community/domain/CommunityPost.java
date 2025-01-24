@@ -39,6 +39,8 @@ public class CommunityPost {
     @Column(name = "comments_count")
     private int commentsCount = 0;
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
 
     @Builder
     public CommunityPost(User author, String title, String content, String region, String postImage) {
@@ -79,5 +81,9 @@ public class CommunityPost {
         this.content = content;
         this.region = region;
         this.postImage = postImage;
+    }
+
+    public void deletePost() {
+        this.isDeleted = true;
     }
 }
