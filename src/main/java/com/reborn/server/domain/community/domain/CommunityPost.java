@@ -39,7 +39,7 @@ public class CommunityPost {
     private Long likesCount = 0L;
 
     @Column(name = "comments_count")
-    private int commentsCount = 0;
+    private int commentsCount = 0; // 게시물에 달린 총 댓글 수
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
@@ -95,7 +95,13 @@ public class CommunityPost {
         this.isDeleted = true;
     }
 
+
+    public void setCommentCounts(int commentCounts) {
+        this.commentsCount = commentCounts;
+    }
+  
     public void updateLikesCount (Long likesCount) {
         this.likesCount = likesCount;
+
     }
 }
