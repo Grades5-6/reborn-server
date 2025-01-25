@@ -2,9 +2,12 @@ package com.reborn.server.domain.community.api;
 
 import com.reborn.server.domain.community.application.CommunityService;
 import com.reborn.server.domain.community.domain.CommunityPost;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
+import com.reborn.server.domain.community.dto.request.CommunityPostUpdateRequest;
+import com.reborn.server.domain.community.dto.response.CommunityPostResponse;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,8 +20,57 @@ public class CommunityApi {
         this.communityService = communityService;
     }
 
+    //to-do
     @GetMapping("/posts")
     public List<CommunityPost> getAllPosts() {
         return communityService.getAllPosts();
+    }
+
+    @PostMapping("/posts")
+    public ResponseEntity<CommunityPostResponse> createPosts(@RequestBody CommunityPostRequest communityPostRequest) {
+        try {
+            CommunityPostResponse newPost = communityService.createPosts(communityPostRequest);
+            return ResponseEntity.ok(newPost);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<CommunityPostResponse> getPosts(@PathVariable Long postId) {
+        try {
+            CommunityPostResponse post = communityService.getPosts(postId);
+            return ResponseEntity.ok(post);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/posts/{postId}")
+    public ResponseEntity<CommunityPostResponse> updatePosts(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequest communityPostUpdateRequest) {
+        try {
+            CommunityPostResponse updatedPost = communityService.updatePosts(postId, communityPostUpdateRequest);
+            return ResponseEntity.ok(updatedPost);
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e){
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Object> deletePosts(@PathVariable Long postId) {
+        try {
+            communityService.deletePosts(postId);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e){
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
