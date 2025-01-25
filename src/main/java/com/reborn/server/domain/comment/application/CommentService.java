@@ -82,21 +82,48 @@ public class CommentService {
         return CommentResponse.of(comment);
     }
 
-    // 댓글 삭제
-    // 부모 댓글인데 자식 댓글이 없으면 -> 바로 삭제
+    // 댓글 삭제 -> soft deleted
+
+    // 부모 댓글인데 자식 댓글이 없으면 -> 삭제
     // 부모 댓글인데, 자식 댓글이 있다면 -> 부모 댓글을 "삭제된 댓글입니다." & isDeleted = true 로 변경
     // 자식 댓글인데, 또 다른 자식 댓글이 있다면 -> 해당 댓글을 "삭제된 댓글입니다." & isDeleted = true 로 변경
-    // 자식 댓글인데 자식 댓글이 없으면 -> 그냥 삭제
+    // 자식 댓글인데 자식 댓글이 없으면 -> 삭제
+    // 만약에 부모 댓글인데 다른 자식 댓글이 다 isDeleted = true 이면 해당 그룹 댓글 전체 삭제
 
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new EntityNotFoundException("no Comment id with "+commentId));
+                .orElseThrow(() -> new EntityNotFoundException("no Comment id with " + commentId));
+
+        if (comment.getParent() == null) { // 해당 댓글이 부모댓글인 경우
+            comment.softDelete(true);
+            commentRepository.save(comment);
+
+            // 부모 댓글이 삭제된 상태에서 모든 자식 댓글이 삭제 상태 확인
+            if (comment.areAllChildrenDeleted()) {
+                deleteGroupCommentsIfParentDeleted(comment);
+            }
+
+        } else { // 해당 댓글이 자식 댓글인 경우
+            comment.softDelete(true);
+            commentRepository.save(comment);
+
+            // 자식 댓글 삭제 && 부모 댓글의 모든 자식 댓글이 삭제 상태인지 확인
+            Comment parent = comment.getParent();
+            if (parent.areAllChildrenDeleted() && parent.isDeleted()) {
+                deleteGroupCommentsIfParentDeleted(parent);
+            }
         }
+        commentRepository.save(comment);
+    }
 
-
-
-
-
+    private void deleteGroupCommentsIfParentDeleted(Comment parent) {
+        parent.getChildrenComment().forEach(child -> {
+            child.softDelete(true); // 모든 자식 댓글도 삭제 처리
+            commentRepository.save(child);
+        });
+        parent.softDelete(true); // 부모 댓글 삭제
+        commentRepository.save(parent);
+    }
 }
 
 
