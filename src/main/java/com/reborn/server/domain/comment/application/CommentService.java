@@ -48,15 +48,15 @@ public class CommentService {
         }
 
         // orderNum 계산
-        long orderNum;
+        long groupNum;
         if (parent == null) { // 부모 댓글
-            orderNum = commentRepository.countByPost(post); // 현재 게시물에 달린 댓글 수
+            groupNum = commentRepository.countByPost(post); // 현재 게시물에 달린 댓글 수
         } else { // 자식 댓글
-            orderNum = parent.getOrderNum(); // 부모 댓글의 orderNum과 동일
+            groupNum = parent.getGroupNum(); // 부모 댓글의 orderNum과 동일
         }
 
         // 댓글 엔터티 생성 및 저장
-        Comment comment = Comment.of(post, user, text, parent, orderNum);
+        Comment comment = Comment.of(post, user, text, parent, groupNum);
 
         // 부모 댓글에 자식 댓글 추가 (대댓글일 경우)
         if (parent != null) {
