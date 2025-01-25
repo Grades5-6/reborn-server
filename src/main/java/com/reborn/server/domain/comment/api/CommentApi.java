@@ -1,8 +1,10 @@
 package com.reborn.server.domain.comment.api;
 
 import com.reborn.server.domain.comment.application.CommentService;
+import com.reborn.server.domain.comment.dto.request.CommentLikeRequest;
 import com.reborn.server.domain.comment.dto.request.CommentModifyRequest;
 import com.reborn.server.domain.comment.dto.request.CommentRequest;
+import com.reborn.server.domain.comment.dto.response.CommentLikeResponse;
 import com.reborn.server.domain.comment.dto.response.CommentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,9 +25,9 @@ public class CommentApi {
     // 댓글 조회
     @GetMapping("/{comment_id}")
     @Operation(summary = "댓글 조회")
-    public ResponseEntity<CommentResponse> getComment(@PathVariable Long comment_id){
+    public ResponseEntity<CommentResponse> getComment(@PathVariable("comment_id") Long commentId){
         try{
-            CommentResponse commentResponse = commentService.getComment(comment_id);
+            CommentResponse commentResponse = commentService.getComment(commentId);
             return new ResponseEntity<>(commentResponse, HttpStatus.OK);
         }catch(EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -49,10 +51,10 @@ public class CommentApi {
     // 댓글 수정
     @PutMapping("/{comment_id}")
     @Operation(summary = "댓글 수정")
-    public ResponseEntity<CommentResponse> modifyComment(@PathVariable Long comment_id, @RequestBody CommentModifyRequest commentModifyRequest){
+    public ResponseEntity<CommentResponse> modifyComment(@PathVariable("comment_id") Long commentId, @RequestBody CommentModifyRequest commentModifyRequest){
         try{
             CommentResponse commentResponse =
-                    commentService.modifyComment(comment_id, commentModifyRequest.getText());
+                    commentService.modifyComment(commentId, commentModifyRequest.getText());
             return new ResponseEntity<>(commentResponse, HttpStatus.OK);
         }catch (EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,8 +64,27 @@ public class CommentApi {
     // 댓글 삭제
     @DeleteMapping("/{comment_id}")
     @Operation(summary = "댓글 삭제")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long comment_id){
-        commentService.deleteComment(comment_id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> deleteComment(@PathVariable("comment_id") Long commentId){
+        try{
+            commentService.deleteComment(commentId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch (EntityNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
     }
+
+    // 댓글 좋아요
+    @PutMapping("/{comment_id}/likes")
+    @Operation(summary = "댓글 좋아요")
+    public ResponseEntity<CommentLikeResponse> commentLikes(@PathVariable("comment_id") Long commentId, CommentLikeRequest commentLikeRequest) {
+        try {
+            CommentLikeResponse commentLikeResponse
+                    = commentService.checkCommentLike(commentId, commentLikeRequest.getUserId());
+            return new ResponseEntity<>(commentLikeResponse, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

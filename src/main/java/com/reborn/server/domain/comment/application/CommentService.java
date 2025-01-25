@@ -1,7 +1,10 @@
 package com.reborn.server.domain.comment.application;
 
+import com.reborn.server.domain.comment.dao.CommentLikeRepository;
 import com.reborn.server.domain.comment.dao.CommentRepository;
 import com.reborn.server.domain.comment.domain.Comment;
+import com.reborn.server.domain.comment.domain.CommentLike;
+import com.reborn.server.domain.comment.dto.response.CommentLikeResponse;
 import com.reborn.server.domain.comment.dto.response.CommentResponse;
 import com.reborn.server.domain.community.dao.CommunityPostRepository;
 import com.reborn.server.domain.community.domain.CommunityPost;
@@ -12,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommunityPostRepository communityPostRepository;
     private final UserRepository userRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
     public CommentResponse getComment(Long commentId) {
@@ -123,6 +129,32 @@ public class CommentService {
         });
         parent.softDelete(true); // 부모 댓글 삭제
         commentRepository.save(parent);
+    }
+
+
+    @Transactional
+    public CommentLikeResponse checkCommentLike(Long commentId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("no User id with" + userId));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("no comment id with " + commentId));
+
+        Optional<CommentLike> existingLike = commentLikeRepository.findByUserIdAndCommentId(userId, commentId);
+
+        // 좋아요 눌러져있으면 삭제 및 총 좋아요 수 감소
+        if (existingLike.isPresent()) {
+            commentLikeRepository.deleteByUserIdAndCommentId(userId, commentId);
+            comment.setCommentLike(comment.getCommentLikes() - 1);
+
+        } else { // 좋아요 안 눌러져있으면
+            CommentLike commentLike = CommentLike.of(user, comment);
+            commentLikeRepository.save(commentLike);
+            comment.setCommentLike(comment.getCommentLikes() + 1);
+        }
+
+        commentRepository.save(comment);
+        return CommentLikeResponse.of(comment);
     }
 }
 
