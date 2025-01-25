@@ -5,6 +5,7 @@ import com.reborn.server.domain.community.domain.CommunityPost;
 import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
 import com.reborn.server.domain.community.dto.request.CommunityPostUpdateRequest;
 import com.reborn.server.domain.community.dto.response.CommunityPostResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +21,8 @@ public class CommunityApi {
         this.communityService = communityService;
     }
 
-    //to-do
-    @GetMapping("/posts")
-    public List<CommunityPost> getAllPosts() {
-        return communityService.getAllPosts();
-    }
-
     @PostMapping("/posts")
+    @Operation(summary = "게시글 작성")
     public ResponseEntity<CommunityPostResponse> createPosts(@RequestBody CommunityPostRequest communityPostRequest) {
         try {
             CommunityPostResponse newPost = communityService.createPosts(communityPostRequest);
@@ -39,6 +35,7 @@ public class CommunityApi {
     }
 
     @GetMapping("/posts/{postId}")
+    @Operation(summary = "게시글 조회")
     public ResponseEntity<CommunityPostResponse> getPosts(@PathVariable Long postId) {
         try {
             CommunityPostResponse post = communityService.getPosts(postId);
@@ -51,6 +48,7 @@ public class CommunityApi {
     }
 
     @PutMapping("/posts/{postId}")
+    @Operation(summary = "게시글 수정")
     public ResponseEntity<CommunityPostResponse> updatePosts(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequest communityPostUpdateRequest) {
         try {
             CommunityPostResponse updatedPost = communityService.updatePosts(postId, communityPostUpdateRequest);
@@ -63,6 +61,7 @@ public class CommunityApi {
     }
 
     @DeleteMapping("/posts/{postId}")
+    @Operation(summary = "게시글 삭제")
     public ResponseEntity<Object> deletePosts(@PathVariable Long postId) {
         try {
             communityService.deletePosts(postId);
