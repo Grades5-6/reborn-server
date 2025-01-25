@@ -1,5 +1,6 @@
 package com.reborn.server.domain.community.domain;
 
+import com.reborn.server.domain.comment.domain.Comment;
 import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
 import com.reborn.server.domain.user.domain.User;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.time.LocalDateTime;
 
 @Entity
@@ -83,6 +85,15 @@ public class CommunityPost {
         this.postImage = postImage;
     }
 
+    private int likes_count = 0;
+    // private int comments_count = 0;
+
+    // 하나의 포스트에 여러 개의 댓글
+    // 포스트 로드 될 때 관련 댓글도 로드됨 & 포스트 삭제 시 관련 댓글도 삭제
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OrderBy("id asc") // 댓글 정렬
+    private List<Comment> comments;
+  
     public void deletePost() {
         this.isDeleted = true;
     }
