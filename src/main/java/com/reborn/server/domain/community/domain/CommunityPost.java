@@ -36,7 +36,7 @@ public class CommunityPost {
     private LocalDateTime createdAt;
 
     @Column(name = "likes_count")
-    private int likesCount = 0;
+    private Long likesCount = 0L;
 
     @Column(name = "comments_count")
     private int commentsCount = 0; // 게시물에 달린 총 댓글 수
@@ -95,7 +95,13 @@ public class CommunityPost {
         this.isDeleted = true;
     }
 
+
     public void setCommentCounts(int commentCounts) {
         this.commentsCount = commentCounts;
+    }
+  
+    public void updateLikesCount (Long likesCount) {
+        this.likesCount = likesCount;
+
     }
 }
