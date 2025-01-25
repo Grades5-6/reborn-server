@@ -1,4 +1,4 @@
-package com.reborn.server.domain.community.domain;
+package com.reborn.server.domain.post.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -17,19 +17,19 @@ public class PostCategoryTag {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
-    private CommunityPost post;
+    private Post post;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "categoryTag")
     private CategoryTag categoryTag;
 
     @Builder
-    public PostCategoryTag(CommunityPost post, CategoryTag categoryTag) {
+    public PostCategoryTag(Post post, CategoryTag categoryTag) {
         this.post = post;
         this.categoryTag = categoryTag;
     }
 
-    public static PostCategoryTag of (CommunityPost post, CategoryTag categoryTag){
+    public static PostCategoryTag of (Post post, CategoryTag categoryTag){
         return PostCategoryTag.builder()
                 .post(post)
                 .categoryTag(categoryTag)

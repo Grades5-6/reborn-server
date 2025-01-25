@@ -1,6 +1,6 @@
-package com.reborn.server.domain.community.dto.response;
+package com.reborn.server.domain.post.dto.response;
 
-import com.reborn.server.domain.community.domain.CommunityPost;
+import com.reborn.server.domain.post.domain.Post;
 import com.reborn.server.domain.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-public class CommunityPostResponse {
+public class PostResponse {
 
     //author
     private Long authorId;
@@ -36,8 +36,8 @@ public class CommunityPostResponse {
 
     private int commentCounts;
 
-    public static CommunityPostResponse from(User author, CommunityPost post, List<String> interestTags, List<String> categoryTags, int commentCounts) {
-        return CommunityPostResponse.builder()
+    public static PostResponse from(User author, Post post, List<String> interestTags, List<String> categoryTags, int commentCounts) {
+        return PostResponse.builder()
                 .authorId(author.getId())
                 .authorNickName(author.getNickName())
                 .authorProfileImg(author.getProfileImg())

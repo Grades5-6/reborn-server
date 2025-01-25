@@ -1,4 +1,4 @@
-package com.reborn.server.domain.community.domain;
+package com.reborn.server.domain.post.domain;
 
 import com.reborn.server.domain.user.domain.User;
 import jakarta.persistence.*;
@@ -22,15 +22,15 @@ public class PostLike {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private CommunityPost post;
+    private Post post;
 
     @Builder
-    public PostLike(User user, CommunityPost post) {
+    public PostLike(User user, Post post) {
         this.user = user;
         this.post = post;
     }
 
-    public static PostLike of(User user, CommunityPost post) {
+    public static PostLike of(User user, Post post) {
         return PostLike.builder()
                 .user(user)
                 .post(post)

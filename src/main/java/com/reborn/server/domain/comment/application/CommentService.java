@@ -6,8 +6,8 @@ import com.reborn.server.domain.comment.domain.Comment;
 import com.reborn.server.domain.comment.domain.CommentLike;
 import com.reborn.server.domain.comment.dto.response.CommentLikeResponse;
 import com.reborn.server.domain.comment.dto.response.CommentResponse;
-import com.reborn.server.domain.community.dao.CommunityPostRepository;
-import com.reborn.server.domain.community.domain.CommunityPost;
+import com.reborn.server.domain.post.dao.PostRepository;
+import com.reborn.server.domain.post.domain.Post;
 import com.reborn.server.domain.user.dao.UserRepository;
 import com.reborn.server.domain.user.domain.User;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,7 +23,7 @@ import java.util.Optional;
 // user랑 post id 조회 service 계층에서 수행
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final CommunityPostRepository communityPostRepository;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentLikeRepository commentLikeRepository;
 
@@ -43,7 +43,7 @@ public class CommentService {
                 .orElseThrow(() -> new EntityNotFoundException("no User id with" + userId));
 
         // 게시물 조회
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(()->new EntityNotFoundException("no Post id with" + postId));
 
         // 부모 댓글 조회 (parentId가 null이 아닐 경우에만)

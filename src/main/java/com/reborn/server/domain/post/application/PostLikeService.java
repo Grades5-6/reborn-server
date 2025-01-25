@@ -1,9 +1,9 @@
-package com.reborn.server.domain.community.application;
+package com.reborn.server.domain.post.application;
 
-import com.reborn.server.domain.community.dao.CommunityPostRepository;
-import com.reborn.server.domain.community.dao.PostLikeRepository;
-import com.reborn.server.domain.community.domain.CommunityPost;
-import com.reborn.server.domain.community.domain.PostLike;
+import com.reborn.server.domain.post.dao.PostRepository;
+import com.reborn.server.domain.post.dao.PostLikeRepository;
+import com.reborn.server.domain.post.domain.Post;
+import com.reborn.server.domain.post.domain.PostLike;
 import com.reborn.server.domain.user.dao.UserRepository;
 import com.reborn.server.domain.user.domain.User;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,14 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PostLikeService {
     private final PostLikeRepository postLikeRepository;
-    private final CommunityPostRepository communityPostRepository;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
 
     public PostLikeService(PostLikeRepository postLikeRepository,
-                           CommunityPostRepository communityPostRepository,
+                           PostRepository postRepository,
                            UserRepository userRepository) {
         this.postLikeRepository = postLikeRepository;
-        this.communityPostRepository = communityPostRepository;
+        this.postRepository = postRepository;
         this.userRepository = userRepository;
 
     }
@@ -31,7 +31,7 @@ public class PostLikeService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User Not Found"));
 
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post Not Found"));
 
         if (!postLikeRepository.existsByUserAndPost(user, post)) {
@@ -39,7 +39,7 @@ public class PostLikeService {
             postLikeRepository.save(postLike);
 
             post.updateLikesCount(postLikeRepository.countAllByPost(post));
-            CommunityPost updateLikPost = communityPostRepository.save(post);
+            Post updateLikPost = postRepository.save(post);
 
             return updateLikPost.getLikesCount();
         }else{
@@ -52,14 +52,14 @@ public class PostLikeService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User Not Found"));
 
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post Not Found"));
 
         if (postLikeRepository.existsByUserAndPost(user, post)) {
             postLikeRepository.deleteByUserAndPost(user, post);
 
             post.updateLikesCount(postLikeRepository.countAllByPost(post));
-            CommunityPost updateLikPost = communityPostRepository.save(post);
+            Post updateLikPost = postRepository.save(post);
 
             return updateLikPost.getLikesCount();
         }else{

@@ -1,7 +1,7 @@
-package com.reborn.server.domain.community.dao;
+package com.reborn.server.domain.post.dao;
 
-import com.reborn.server.domain.community.domain.CategoryTag;
-import com.reborn.server.domain.community.domain.PostCategoryTag;
+import com.reborn.server.domain.post.domain.CategoryTag;
+import com.reborn.server.domain.post.domain.PostCategoryTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

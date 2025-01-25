@@ -1,6 +1,6 @@
 package com.reborn.server.domain.comment.domain;
 
-import com.reborn.server.domain.community.domain.CommunityPost;
+import com.reborn.server.domain.post.domain.Post;
 import com.reborn.server.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,7 +25,7 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
-    private CommunityPost post;
+    private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -56,7 +56,7 @@ public class Comment {
     @OneToMany(mappedBy = "parent") // 하나의 부모에 여러 개의 자식 댓글 존재 가능
     private List<Comment> childrenComment = new ArrayList<>(); // 자식 댓글들 리스트
 
-    public static Comment of(CommunityPost post, User user,String text, Comment parent, long groupNum){
+    public static Comment of(Post post, User user, String text, Comment parent, long groupNum){
         return Comment.builder()
                 .post(post)
                 .user(user)
