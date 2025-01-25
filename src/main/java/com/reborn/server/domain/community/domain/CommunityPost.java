@@ -36,7 +36,7 @@ public class CommunityPost {
     private LocalDateTime createdAt;
 
     @Column(name = "likes_count")
-    private int likesCount = 0;
+    private Long likesCount = 0L;
 
     @Column(name = "comments_count")
     private int commentsCount = 0;
@@ -85,9 +85,6 @@ public class CommunityPost {
         this.postImage = postImage;
     }
 
-    private int likes_count = 0;
-    // private int comments_count = 0;
-
     // 하나의 포스트에 여러 개의 댓글
     // 포스트 로드 될 때 관련 댓글도 로드됨 & 포스트 삭제 시 관련 댓글도 삭제
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
@@ -96,5 +93,9 @@ public class CommunityPost {
   
     public void deletePost() {
         this.isDeleted = true;
+    }
+
+    public void updateLikesCount (Long likesCount) {
+        this.likesCount = likesCount;
     }
 }
