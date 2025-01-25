@@ -28,7 +28,7 @@ public class CommunityPostResponse {
     private String content;
     private String region;
     private String postImage;
-    private int likesCount;
+    private Long likesCount;
     private int commentsCount;
     private LocalDateTime createdAt;
     private List<String> interestTags;
