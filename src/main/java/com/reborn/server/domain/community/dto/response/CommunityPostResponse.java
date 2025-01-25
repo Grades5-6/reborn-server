@@ -34,7 +34,9 @@ public class CommunityPostResponse {
     private List<String> interestTags;
     private List<String> categoryTags;
 
-    public static CommunityPostResponse from(User author, CommunityPost post, List<String> interestTags, List<String> categoryTags) {
+    private int commentCounts;
+
+    public static CommunityPostResponse from(User author, CommunityPost post, List<String> interestTags, List<String> categoryTags, int commentCounts) {
         return CommunityPostResponse.builder()
                 .authorId(author.getId())
                 .authorNickName(author.getNickName())
@@ -48,10 +50,11 @@ public class CommunityPostResponse {
                 .region(post.getRegion())
                 .postImage(post.getPostImage())
                 .likesCount(post.getLikesCount())
-                .commentsCount(post.getCommentsCount())
+                .commentCounts(commentCounts)
                 .createdAt(post.getCreatedAt())
                 .interestTags(interestTags)
                 .categoryTags(categoryTags)
+                .commentCounts(post.getCommentsCount())
                 .build();
     }
 }

@@ -82,7 +82,11 @@ public class CommunityService {
                 .map(CategoryTag::getName)
                 .toList();
 
-        return CommunityPostResponse.from(author, post, interestTagNameList, categoryTagNameList);
+        int commentCounts = communityPostRepository.countNotDeletedByPostId(postId);
+        post.setCommentCounts(commentCounts);
+        communityPostRepository.save(post);
+
+        return CommunityPostResponse.from(author, post, interestTagNameList, categoryTagNameList, commentCounts);
     }
 
     @Transactional

@@ -39,7 +39,7 @@ public class CommunityPost {
     private int likesCount = 0;
 
     @Column(name = "comments_count")
-    private int commentsCount = 0;
+    private int commentsCount = 0; // 게시물에 달린 총 댓글 수
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
@@ -85,9 +85,6 @@ public class CommunityPost {
         this.postImage = postImage;
     }
 
-    private int likes_count = 0;
-    // private int comments_count = 0;
-
     // 하나의 포스트에 여러 개의 댓글
     // 포스트 로드 될 때 관련 댓글도 로드됨 & 포스트 삭제 시 관련 댓글도 삭제
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
@@ -96,5 +93,9 @@ public class CommunityPost {
   
     public void deletePost() {
         this.isDeleted = true;
+    }
+
+    public void setCommentCounts(int commentCounts) {
+        this.commentsCount = commentCounts;
     }
 }
