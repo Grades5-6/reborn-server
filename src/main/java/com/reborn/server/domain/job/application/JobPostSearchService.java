@@ -3,15 +3,14 @@ package com.reborn.server.domain.job.application;
 import com.reborn.server.domain.job.dao.JobPostDetailRepository;
 import com.reborn.server.domain.job.domain.JobPostDetail;
 import com.reborn.server.domain.job.dto.response.JobResponseDto;
-import com.reborn.server.domain.license.domain.License;
 import com.reborn.server.domain.user.dao.UserRepository;
 import com.reborn.server.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -63,6 +62,75 @@ public class JobPostSearchService {
             }
             return score;
         });
+    }
+
+
+    public List<JobResponseDto> getRecommendJobPost(Long userId) {
+        User user = userRepository.findByName(userName).orElseThrow();
+
+        return calculateScoreAndFilter(jobPost -> {
+            int score = 0;
+            int currentYear = LocalDate.now().getYear(); // 현재 연도 가져오기
+            int userAge = currentYear - user.getYear();
+
+            // 사용자의 지역과 일자리 공고의 위치 비교
+            if (jobPost.getWorkAddr().contains(user.getRegion())) {
+                score += 15; // 지역 일치 시 높은 점수 부여
+            }
+
+            // 사용자의 나이와 일자리 공고의 연령 제한 비교 (예시)
+            if (isAgeEligible(userAge, jobPost.getAgeLim(), jobPost.getAge())) {
+                score += 10; // 나이 조건 부합 시 점수 부여
+            }
+
+            // 관심사와 공고 제목, 세부 내용, 회사 이름에서의 검사 및 점수 추가
+            for (String interest : user.getInterestedField()) {
+                int titleCount = countOccurrences(jobPost.getJobTitle(), interest);
+                int detailCount = countOccurrences(jobPost.getDetailCont(), interest);
+                int companyCount = countOccurrences(jobPost.getCompanyName(), interest);
+
+                // 각 관심사가 등장할 때마다 점수 부여
+                score += titleCount * 5; // 제목에서의 점수
+                score += detailCount * 3; // 세부 내용에서의 점수
+                score += companyCount * 2; // 회사 이름에서의 점수
+            }
+            return score;
+        });
+
+    }
+
+    private boolean isAgeEligible(int userAge, String ageLim, String age) {
+
+        int maxAge = Integer.MAX_VALUE;
+        int minAge = 0;
+
+        if (ageLim != null && !ageLim.isEmpty()) {
+            maxAge = Integer.parseInt(ageLim);
+        }
+
+        if (age != null && !age.isEmpty()) {
+            minAge = Integer.parseInt(age); // 공고에서 요구하는 최소 나이
+        }
+
+        // 사용자의 나이가 나이 제한 범위 내에 있는지 확인
+        return userAge >= minAge && userAge <= maxAge;
+    }
+
+    // 문자열에서 특정 문자열의 등장 횟수를 카운트
+    private int countOccurrences(String text, String substring) {
+        if (text == null || substring == null || substring.isEmpty()) {
+            return 0;
+        }
+
+        int count = 0;
+        int index = 0;
+
+        while ((index = text.indexOf(substring, index)) != -1) {
+            count++;
+            index += substring.length(); // 다음 검색 위치로 이동
+        }
+
+        return count;
     }
 
     /**

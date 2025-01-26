@@ -2,15 +2,13 @@ package com.reborn.server.domain.job.api;
 
 import com.reborn.server.domain.job.application.JobPostSearchService;
 import com.reborn.server.domain.job.application.JobPostService;
+import com.reborn.server.domain.job.dto.request.JobPostRequestDto;
 import com.reborn.server.domain.job.dto.response.JobResponseDto;
-import com.reborn.server.domain.license.dto.response.LicenseResponseDto;
+import com.reborn.server.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -46,6 +44,12 @@ public class JobPostApi {
     @GetMapping("/licenses")
     public ResponseEntity<List<JobResponseDto>> getJobPostByLicenses(@RequestParam String jmfldnm) {
         List<JobResponseDto> searchResults = jobPostSearchService.getJobPostsByLicenses(jmfldnm);
+        return ResponseEntity.ok(searchResults);
+    }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<List<JobResponseDto>> getRecommendJobPost(@RequestBody JobPostRequestDto jobPostRequestDto) {
+        List<JobResponseDto> searchResults = jobPostSearchService.getRecommendJobPost(jobPostRequestDto.getUserId());
         return ResponseEntity.ok(searchResults);
     }
 }
