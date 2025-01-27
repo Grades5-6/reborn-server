@@ -64,9 +64,8 @@ public class JobPostSearchService {
         });
     }
 
-
     public List<JobResponseDto> getRecommendJobPost(Long userId) {
-        User user = userRepository.findByName(userName).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
 
         return calculateScoreAndFilter(jobPost -> {
             int score = 0;
@@ -75,15 +74,15 @@ public class JobPostSearchService {
 
             // 사용자의 지역과 일자리 공고의 위치 비교
             if (jobPost.getWorkAddr().contains(user.getRegion())) {
-                score += 15; // 지역 일치 시 높은 점수 부여
+                score += 15;
             }
 
-            // 사용자의 나이와 일자리 공고의 연령 제한 비교 (예시)
+            // 사용자의 나이와 일자리 공고의 연령 제한 비교
             if (isAgeEligible(userAge, jobPost.getAgeLim(), jobPost.getAge())) {
-                score += 10; // 나이 조건 부합 시 점수 부여
+                score += 10;
             }
 
-            // 관심사와 공고 제목, 세부 내용, 회사 이름에서의 검사 및 점수 추가
+            // 사용자 관심사와 공고 제목, 세부 내용, 회사 이름에서의 검사 및 점수 추가
             for (String interest : user.getInterestedField()) {
                 int titleCount = countOccurrences(jobPost.getJobTitle(), interest);
                 int detailCount = countOccurrences(jobPost.getDetailCont(), interest);
@@ -112,7 +111,6 @@ public class JobPostSearchService {
             minAge = Integer.parseInt(age); // 공고에서 요구하는 최소 나이
         }
 
-        // 사용자의 나이가 나이 제한 범위 내에 있는지 확인
         return userAge >= minAge && userAge <= maxAge;
     }
 
