@@ -24,6 +24,7 @@ public class PostResponse {
     private Integer authorRebornTemperature;
 
     //post
+    private Long id;
     private String title;
     private String content;
     private String region;
@@ -55,6 +56,18 @@ public class PostResponse {
                 .interestTags(interestTags)
                 .categoryTags(categoryTags)
                 .commentCounts(post.getCommentsCount())
+                .build();
+    }
+
+    public static PostResponse of(Post post, int commentsCount) {
+        return PostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .authorNickName(post.getAuthor().getNickName())
+                .region(post.getRegion())
+                .likesCount(post.getLikesCount())
+                .commentsCount(commentsCount)
                 .build();
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -34,8 +35,15 @@ public class PostService {
     }
 
     @Transactional
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostResponse> getAllPosts() {
+        List<Post> posts = postRepository.findAllNotDeleted();
+
+        return posts.stream()
+                .map(post -> PostResponse.of(post, post.getCommentsCount())).toList();
+
+//        return posts.stream()
+//                .map(PostResponse::of)
+//                .collect(Collectors.toList());
     }
 
     @Transactional

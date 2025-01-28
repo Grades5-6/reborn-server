@@ -9,6 +9,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/community")
 public class PostApi {
@@ -67,6 +69,17 @@ public class PostApi {
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException e){
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/posts")
+    @Operation(summary = "전체 게시물 조회")
+    public ResponseEntity<List<PostResponse>> getAllPosts(){
+        try{
+            List<PostResponse> posts = postService.getAllPosts();
+            return ResponseEntity.ok(posts);
+        }  catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

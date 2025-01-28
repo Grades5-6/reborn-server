@@ -15,4 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // isDeleted = false 인 애들만 찾아서 출력
     @Query("SELECT COUNT(c) FROM Comment c WHERE c.isDeleted = false AND c.post.id = :postId")
     int countNotDeletedByPostId(@Param("postId") Long postId);
+
+    @Query("SELECT p FROM Post p WHERE p.isDeleted = false")
+    List<Post> findAllNotDeleted();
 }
