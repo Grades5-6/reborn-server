@@ -1,12 +1,12 @@
-package com.reborn.server.domain.community.application;
+package com.reborn.server.domain.post.application;
 
-import com.reborn.server.domain.community.dao.CommunityPostRepository;
-import com.reborn.server.domain.community.dao.PostCategoryTagRepository;
-import com.reborn.server.domain.community.dao.PostInterestTagRepository;
-import com.reborn.server.domain.community.domain.*;
-import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
-import com.reborn.server.domain.community.dto.request.CommunityPostUpdateRequest;
-import com.reborn.server.domain.community.dto.response.CommunityPostResponse;
+import com.reborn.server.domain.post.dao.PostRepository;
+import com.reborn.server.domain.post.dao.PostCategoryTagRepository;
+import com.reborn.server.domain.post.dao.PostInterestTagRepository;
+import com.reborn.server.domain.post.domain.*;
+import com.reborn.server.domain.post.dto.request.PostRequest;
+import com.reborn.server.domain.post.dto.request.PostUpdateRequest;
+import com.reborn.server.domain.post.dto.response.PostResponse;
 import com.reborn.server.domain.user.dao.UserRepository;
 import com.reborn.server.domain.user.domain.User;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,49 +15,57 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class CommunityService {
-    private final CommunityPostRepository communityPostRepository;
+public class PostService {
+    private final PostRepository postRepository;
     private final PostInterestTagRepository postInterestTagRepository;
     private final PostCategoryTagRepository postCategoryTagRepository;
     private final UserRepository userRepository;
 
-    public CommunityService(CommunityPostRepository communityPostRepository,
-                            PostInterestTagRepository postInterestTagRepository,
-                            PostCategoryTagRepository postCategoryTagRepository,
-                            UserRepository userRepository) {
-        this.communityPostRepository = communityPostRepository;
+    public PostService(PostRepository postRepository,
+                       PostInterestTagRepository postInterestTagRepository,
+                       PostCategoryTagRepository postCategoryTagRepository,
+                       UserRepository userRepository) {
+        this.postRepository = postRepository;
         this.postInterestTagRepository = postInterestTagRepository;
         this.postCategoryTagRepository = postCategoryTagRepository;
         this.userRepository = userRepository;
     }
 
     @Transactional
-    public List<CommunityPost> getAllPosts() {
-        return communityPostRepository.findAll();
+    public List<PostResponse> getAllPosts() {
+        List<Post> posts = postRepository.findAllNotDeleted();
+
+        return posts.stream()
+                .map(post -> PostResponse.of(post, post.getCommentsCount())).toList();
+
+//        return posts.stream()
+//                .map(PostResponse::of)
+//                .collect(Collectors.toList());
     }
 
     @Transactional
-    public CommunityPostResponse createPosts(CommunityPostRequest communityPostRequest) {
+    public PostResponse createPosts(PostRequest postRequest) {
         // 사용자 ID로 사용자 조회
-        User author = userRepository.findById(communityPostRequest.getAuthorId())
+        User author = userRepository.findById(postRequest.getAuthorId())
                 .orElseThrow(() -> new EntityNotFoundException("User Not Found"));
         // 게시글 생성
-        CommunityPost post = CommunityPost.from(communityPostRequest, author);
+        Post post = Post.from(postRequest, author);
 
-        CommunityPost newPost = communityPostRepository.save(post);
+        Post newPost = postRepository.save(post);
 
         // InterestTag와 CategoryTag 처리
-        if (communityPostRequest.getInterestTags() != null) {
-            for (InterestTag interestTag : communityPostRequest.getInterestTags()) {
+        if (postRequest.getInterestTags() != null) {
+            for (InterestTag interestTag : postRequest.getInterestTags()) {
                 PostInterestTag postInterestTag = PostInterestTag.of(newPost, interestTag);
                 postInterestTagRepository.save(postInterestTag);
             }
         }
 
-        if (communityPostRequest.getCategoryTags() != null) {
-            for (CategoryTag categoryTag : communityPostRequest.getCategoryTags()) {
+        if (postRequest.getCategoryTags() != null) {
+            for (CategoryTag categoryTag : postRequest.getCategoryTags()) {
                 PostCategoryTag postCategoryTag = PostCategoryTag.of(newPost, categoryTag);
                 postCategoryTagRepository.save(postCategoryTag);
             }
@@ -66,8 +74,8 @@ public class CommunityService {
     }
 
     @Transactional
-    public CommunityPostResponse getPosts(Long postId) {
-        CommunityPost post = communityPostRepository.findById(postId)
+    public PostResponse getPosts(Long postId) {
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post Not Found"));
 
         User author = post.getAuthor();
@@ -82,37 +90,37 @@ public class CommunityService {
                 .map(CategoryTag::getName)
                 .toList();
 
-        int commentCounts = communityPostRepository.countNotDeletedByPostId(postId);
+        int commentCounts = postRepository.countNotDeletedByPostId(postId);
         post.setCommentCounts(commentCounts);
-        communityPostRepository.save(post);
+        postRepository.save(post);
 
-        return CommunityPostResponse.from(author, post, interestTagNameList, categoryTagNameList, commentCounts);
+        return PostResponse.from(author, post, interestTagNameList, categoryTagNameList, commentCounts);
     }
 
     @Transactional
-    public CommunityPostResponse updatePosts(Long postId, CommunityPostUpdateRequest communityPostUpdateRequest) {
+    public PostResponse updatePosts(Long postId, PostUpdateRequest postUpdateRequest) {
 
-        if (communityPostUpdateRequest == null) {
+        if (postUpdateRequest == null) {
             throw new IllegalArgumentException("CommunityPostUpdateRequest cannot be null");
         }
 
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post Not Found"));
 
-        post.updatePost(communityPostUpdateRequest.getTitle(),
-                communityPostUpdateRequest.getContent(),
-                communityPostUpdateRequest.getRegion(),
-                communityPostUpdateRequest.getPostImage()
+        post.updatePost(postUpdateRequest.getTitle(),
+                postUpdateRequest.getContent(),
+                postUpdateRequest.getRegion(),
+                postUpdateRequest.getPostImage()
         );
 
-        CommunityPost updatedPost = communityPostRepository.save(post);
+        Post updatedPost = postRepository.save(post);
 
         // 기존에 저장된 태그 리스트 가져오기
         List<InterestTag> existingInterestTags = postInterestTagRepository.findInterestTagsByPostId(postId);
         List<CategoryTag> existingCategoryTags = postCategoryTagRepository.findCategoryTagsByPostId(postId);
 
         // Update InterestTag
-        List<InterestTag> newInterestTags = communityPostUpdateRequest.getInterestTags();
+        List<InterestTag> newInterestTags = postUpdateRequest.getInterestTags();
 
         // 기존 태그 중에서 새로운 태그에 없는 것 삭제
         for (InterestTag existingTag : existingInterestTags) {
@@ -135,7 +143,7 @@ public class CommunityService {
         }
 
         // Update CategoryTag
-        List<CategoryTag> newCategoryTags = communityPostUpdateRequest.getCategoryTags();
+        List<CategoryTag> newCategoryTags = postUpdateRequest.getCategoryTags();
 
         for (CategoryTag existingTag : existingCategoryTags) {
             if (!newCategoryTags.contains(existingTag)) {
@@ -160,10 +168,10 @@ public class CommunityService {
 
     @Transactional
     public void deletePosts(Long postId) {
-        CommunityPost post = communityPostRepository.findById(postId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post Not Found"));
 
         post.deletePost();
-        communityPostRepository.save(post);
+        postRepository.save(post);
     }
 }

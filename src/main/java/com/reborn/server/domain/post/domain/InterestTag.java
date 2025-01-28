@@ -1,4 +1,4 @@
-package com.reborn.server.domain.community.domain;
+package com.reborn.server.domain.post.domain;
 
 import lombok.Getter;
 

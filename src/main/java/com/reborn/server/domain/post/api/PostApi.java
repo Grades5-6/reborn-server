@@ -1,10 +1,9 @@
-package com.reborn.server.domain.community.api;
+package com.reborn.server.domain.post.api;
 
-import com.reborn.server.domain.community.application.CommunityService;
-import com.reborn.server.domain.community.domain.CommunityPost;
-import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
-import com.reborn.server.domain.community.dto.request.CommunityPostUpdateRequest;
-import com.reborn.server.domain.community.dto.response.CommunityPostResponse;
+import com.reborn.server.domain.post.application.PostService;
+import com.reborn.server.domain.post.dto.request.PostRequest;
+import com.reborn.server.domain.post.dto.request.PostUpdateRequest;
+import com.reborn.server.domain.post.dto.response.PostResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -14,18 +13,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/community")
-public class CommunityApi {
-    private final CommunityService communityService;
+public class PostApi {
+    private final PostService postService;
 
-    public CommunityApi(CommunityService communityService) {
-        this.communityService = communityService;
+    public PostApi(PostService postService) {
+        this.postService = postService;
     }
 
     @PostMapping("/posts")
     @Operation(summary = "게시글 작성")
-    public ResponseEntity<CommunityPostResponse> createPosts(@RequestBody CommunityPostRequest communityPostRequest) {
+    public ResponseEntity<PostResponse> createPosts(@RequestBody PostRequest postRequest) {
         try {
-            CommunityPostResponse newPost = communityService.createPosts(communityPostRequest);
+            PostResponse newPost = postService.createPosts(postRequest);
             return ResponseEntity.ok(newPost);
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
@@ -36,9 +35,9 @@ public class CommunityApi {
 
     @GetMapping("/posts/{postId}")
     @Operation(summary = "게시글 조회")
-    public ResponseEntity<CommunityPostResponse> getPosts(@PathVariable Long postId) {
+    public ResponseEntity<PostResponse> getPosts(@PathVariable Long postId) {
         try {
-            CommunityPostResponse post = communityService.getPosts(postId);
+            PostResponse post = postService.getPosts(postId);
             return ResponseEntity.ok(post);
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
@@ -49,9 +48,9 @@ public class CommunityApi {
 
     @PutMapping("/posts/{postId}")
     @Operation(summary = "게시글 수정")
-    public ResponseEntity<CommunityPostResponse> updatePosts(@PathVariable Long postId, @RequestBody CommunityPostUpdateRequest communityPostUpdateRequest) {
+    public ResponseEntity<PostResponse> updatePosts(@PathVariable Long postId, @RequestBody PostUpdateRequest postUpdateRequest) {
         try {
-            CommunityPostResponse updatedPost = communityService.updatePosts(postId, communityPostUpdateRequest);
+            PostResponse updatedPost = postService.updatePosts(postId, postUpdateRequest);
             return ResponseEntity.ok(updatedPost);
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
@@ -64,12 +63,23 @@ public class CommunityApi {
     @Operation(summary = "게시글 삭제")
     public ResponseEntity<Object> deletePosts(@PathVariable Long postId) {
         try {
-            communityService.deletePosts(postId);
+            postService.deletePosts(postId);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         } catch (IllegalStateException e){
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/posts")
+    @Operation(summary = "전체 게시물 조회")
+    public ResponseEntity<List<PostResponse>> getAllPosts(){
+        try{
+            List<PostResponse> posts = postService.getAllPosts();
+            return ResponseEntity.ok(posts);
+        }  catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

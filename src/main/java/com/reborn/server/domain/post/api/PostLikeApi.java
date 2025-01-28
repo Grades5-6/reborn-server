@@ -1,7 +1,7 @@
-package com.reborn.server.domain.community.api;
+package com.reborn.server.domain.post.api;
 
-import com.reborn.server.domain.community.application.PostLikeService;
-import com.reborn.server.domain.community.dto.request.PostLikeRequest;
+import com.reborn.server.domain.post.application.PostLikeService;
+import com.reborn.server.domain.post.dto.request.PostLikeRequest;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

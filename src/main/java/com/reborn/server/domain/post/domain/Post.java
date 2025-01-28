@@ -1,7 +1,7 @@
-package com.reborn.server.domain.community.domain;
+package com.reborn.server.domain.post.domain;
 
 import com.reborn.server.domain.comment.domain.Comment;
-import com.reborn.server.domain.community.dto.request.CommunityPostRequest;
+import com.reborn.server.domain.post.dto.request.PostRequest;
 import com.reborn.server.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommunityPost {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +45,7 @@ public class CommunityPost {
     private boolean isDeleted = false;
 
     @Builder
-    public CommunityPost(User author, String title, String content, String region, String postImage) {
+    public Post(User author, String title, String content, String region, String postImage) {
         this.author = author;
         this.title = title;
         this.content = content;
@@ -53,8 +53,8 @@ public class CommunityPost {
         this.postImage = postImage;
     }
 
-    public static CommunityPost of (User author, String title, String content, String region, String postImage) {
-        return CommunityPost.builder()
+    public static Post of (User author, String title, String content, String region, String postImage) {
+        return Post.builder()
                 .author(author)
                 .title(title)
                 .content(content)
@@ -63,8 +63,8 @@ public class CommunityPost {
                 .build();
     }
 
-    public static CommunityPost from (CommunityPostRequest request, User author) {
-        return CommunityPost.builder()
+    public static Post from (PostRequest request, User author) {
+        return Post.builder()
                 .author(author)
                 .title(request.getTitle())
                 .content(request.getContent())

@@ -1,4 +1,4 @@
-package com.reborn.server.domain.community.dto.request;
+package com.reborn.server.domain.post.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

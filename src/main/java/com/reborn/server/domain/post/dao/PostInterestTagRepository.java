@@ -1,7 +1,7 @@
-package com.reborn.server.domain.community.dao;
+package com.reborn.server.domain.post.dao;
 
-import com.reborn.server.domain.community.domain.InterestTag;
-import com.reborn.server.domain.community.domain.PostInterestTag;
+import com.reborn.server.domain.post.domain.InterestTag;
+import com.reborn.server.domain.post.domain.PostInterestTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
