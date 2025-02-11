@@ -127,9 +127,8 @@ public class PostService {
             if (!newInterestTags.contains(existingTag)) {
 
                 // InterestTag와 postId로 PostInterestTag를 찾기
-                Optional<PostInterestTag> postInterestTagOptional = postInterestTagRepository.findByInterestTagAndPostId(existingTag, postId);
-                // PostInterestTag가 존재하는 경우 삭제
-                postInterestTagOptional.ifPresent(postInterestTagRepository::delete);
+                PostInterestTag deletePostInterestTag = postInterestTagRepository.findByInterestTagAndPostId(existingTag, postId);
+                postInterestTagRepository.delete(deletePostInterestTag);
 
             }
         }
@@ -149,10 +148,8 @@ public class PostService {
             if (!newCategoryTags.contains(existingTag)) {
 
                 // CategoryTag와 postId로 PostCategoryTag를 찾기
-                Optional<PostCategoryTag> postCategoryTagOptional = postCategoryTagRepository.findByCategoryTagAndPostId(existingTag, postId);
-
-                // PostCategoryTag가 존재하는 경우 삭제
-                postCategoryTagOptional.ifPresent(postCategoryTagRepository::delete);
+                PostCategoryTag deletePostCategoryTag = postCategoryTagRepository.findByCategoryTagAndPostId(existingTag, postId);
+                postCategoryTagRepository.delete(deletePostCategoryTag);
             }
         }
 

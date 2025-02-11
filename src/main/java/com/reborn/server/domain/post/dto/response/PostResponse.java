@@ -46,6 +46,7 @@ public class PostResponse {
                 .authorInterestTag(author.getInterestedField())
                 .authorEmploymentStatus(author.getEmploymentStatus())
                 .authorRebornTemperature(author.getRebornTemperature())
+                .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .region(post.getRegion())
