@@ -30,7 +30,6 @@ public class PostResponse {
     private String region;
     private String postImage;
     private Long likesCount;
-    private int commentsCount;
     private LocalDateTime createdAt;
     private List<String> interestTags;
     private List<String> categoryTags;
@@ -56,11 +55,10 @@ public class PostResponse {
                 .createdAt(post.getCreatedAt())
                 .interestTags(interestTags)
                 .categoryTags(categoryTags)
-                .commentCounts(post.getCommentsCount())
                 .build();
     }
 
-    public static PostResponse of(Post post, int commentsCount) {
+    public static PostResponse of(Post post, int commentsCounts) {
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -68,7 +66,7 @@ public class PostResponse {
                 .authorNickName(post.getAuthor().getNickName())
                 .region(post.getRegion())
                 .likesCount(post.getLikesCount())
-                .commentsCount(commentsCount)
+                .commentCounts(commentsCounts)
                 .build();
     }
 }
