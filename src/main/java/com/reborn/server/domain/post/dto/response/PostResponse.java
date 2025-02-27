@@ -1,5 +1,7 @@
 package com.reborn.server.domain.post.dto.response;
 
+import com.reborn.server.domain.post.domain.CategoryTag;
+import com.reborn.server.domain.post.domain.InterestTag;
 import com.reborn.server.domain.post.domain.Post;
 import com.reborn.server.domain.user.domain.User;
 import lombok.AllArgsConstructor;
@@ -31,12 +33,12 @@ public class PostResponse {
     private String postImage;
     private Long likesCount;
     private LocalDateTime createdAt;
-    private List<String> interestTags;
-    private List<String> categoryTags;
+    private List<InterestTag> interestTags;
+    private List<CategoryTag> categoryTags;
 
     private int commentCounts;
 
-    public static PostResponse from(User author, Post post, List<String> interestTags, List<String> categoryTags, int commentCounts) {
+    public static PostResponse from(User author, Post post, List<InterestTag> interestTags, List<CategoryTag> categoryTags, int commentCounts) {
         return PostResponse.builder()
                 .authorId(author.getId())
                 .authorNickName(author.getNickName())
