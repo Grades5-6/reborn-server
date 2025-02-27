@@ -85,6 +85,7 @@ public class Post {
         this.region = region;
         this.postImage = postImage;
 
+        // 기존 태그 삭제
         this.postInterestTags.clear();
         this.postCategoryTags.clear();
 

@@ -128,4 +128,22 @@ public class PostService {
         post.deletePost();
         postRepository.save(post);
     }
+
+    @Transactional
+    public List<PostResponse> getPostsByHashtag(InterestTag interestTag, CategoryTag categoryTag) {
+        List<Post> postList = postRepository.findPostsByInterestTagAndCategoryTag(interestTag, categoryTag);
+
+        return postList.stream()
+                .map(post -> PostResponse.of(post, post.getCommentsCount()))
+                .toList();
+    }
+
+    @Transactional
+    public List<PostResponse> getPostsByRegionAndHashtag(String region, InterestTag interestTag, CategoryTag categoryTag) {
+        List<Post> postList = postRepository.findPostsByRegionAndInterestTagAndCategoryTag(region, interestTag, categoryTag);
+
+        return postList.stream()
+                .map(post -> PostResponse.of(post, post.getCommentsCount()))
+                .toList();
+    }
 }
