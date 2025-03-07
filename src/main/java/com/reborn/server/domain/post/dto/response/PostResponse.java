@@ -1,5 +1,7 @@
 package com.reborn.server.domain.post.dto.response;
 
+import com.reborn.server.domain.post.domain.CategoryTag;
+import com.reborn.server.domain.post.domain.InterestTag;
 import com.reborn.server.domain.post.domain.Post;
 import com.reborn.server.domain.user.domain.User;
 import lombok.AllArgsConstructor;
@@ -30,14 +32,13 @@ public class PostResponse {
     private String region;
     private String postImage;
     private Long likesCount;
-    private int commentsCount;
     private LocalDateTime createdAt;
-    private List<String> interestTags;
-    private List<String> categoryTags;
+    private List<InterestTag> interestTags;
+    private List<CategoryTag> categoryTags;
 
     private int commentCounts;
 
-    public static PostResponse from(User author, Post post, List<String> interestTags, List<String> categoryTags, int commentCounts) {
+    public static PostResponse from(User author, Post post, List<InterestTag> interestTags, List<CategoryTag> categoryTags, int commentCounts) {
         return PostResponse.builder()
                 .authorId(author.getId())
                 .authorNickName(author.getNickName())
@@ -56,11 +57,10 @@ public class PostResponse {
                 .createdAt(post.getCreatedAt())
                 .interestTags(interestTags)
                 .categoryTags(categoryTags)
-                .commentCounts(post.getCommentsCount())
                 .build();
     }
 
-    public static PostResponse of(Post post, int commentsCount) {
+    public static PostResponse of(Post post, int commentsCounts) {
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -68,7 +68,7 @@ public class PostResponse {
                 .authorNickName(post.getAuthor().getNickName())
                 .region(post.getRegion())
                 .likesCount(post.getLikesCount())
-                .commentsCount(commentsCount)
+                .commentCounts(commentsCounts)
                 .build();
     }
 }
